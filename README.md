@@ -42,10 +42,11 @@ I am an Artificial Intelligence & Machine Learning engineering student based in 
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 
 #### 🛠️ Environment & Tools
+#### 🛠️ Environment & Tools
 ![Arch Linux](https://img.shields.io/badge/Arch_Linux-CachyOS-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white)
+![VS Code](https://img.shields.io/badge/VS_Code-Development-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
-![CreatorKore](https://img.shields.io/badge/CreatorKore-Tools-FF9900?style=for-the-badge)
-
+![Antigravity](https://img.shields.io/badge/Antigravity-import_antigravity-FFD43B?style=for-the-badge&logo=python&logoColor=3776AB)
 ---
 
 ### 📊 GitHub Insights
