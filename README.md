@@ -62,22 +62,21 @@ I am an Artificial Intelligence & Machine Learning engineering student based in 
 
 ---
 
+---
+
 ### 🤝 Let's Connect
 
-<div align="center">
-  <a href="https://www.linkedin.com/in/srinivas-r-c-169406294?utm_source=share_via&utm_content=profile&utm_medium=member_ios">
+<div align="left">
+  <a href="https://www.linkedin.com/in/srinivas-r-c-169406294?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank">
     <img src="https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
   </a>
   <a href="mailto:srinivasrc0408@gmail.com">
     <img src="https://img.shields.io/badge/Email-Reach_Out-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" />
   </a>
+  <a href="https://steamcommunity.com/profiles/76561199545795989/" target="_blank">
+    <img src="https://img.shields.io/badge/Steam-Profile-000000?style=for-the-badge&logo=steam&logoColor=white" alt="Steam" />
+  </a>
 </div>
 
-<br>
-
-#### 🎮 Desktop Setup & Tools
-<a href="https://steamcommunity.com/profiles/76561199545795989/" target="_blank">
-  <img src="https://img.shields.io/badge/steam-%23000000.svg?style=for-the-badge&logo=steam&logoColor=white" alt="Steam Profile" />
-</a>
 
 > *"If a new AI tool or model dropped in the last 24 hours, I've probably already broken its API, tested its limits, and integrated it into a terminal script."*
