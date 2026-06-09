@@ -54,6 +54,9 @@ I am an Artificial Intelligence & Machine Learning engineering student based in 
 </div>
 
 ---
+
+![Steam](https://img.shields.io/badge/steam-%23000000.svg?style=for-the-badge&logo=steam&logoColor=white)
+
 ### 🤝 Let's Connect
 
 <div align="center">
