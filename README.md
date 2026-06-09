@@ -29,6 +29,9 @@ I am an Artificial Intelligence & Machine Learning engineering student based in 
 ![Claude](https://img.shields.io/badge/Claude-Integration-D97757?style=for-the-badge&logo=anthropic&logoColor=white)
 ![Agentic Workflows](https://img.shields.io/badge/Agentic_Workflows-Archagent-4D96FF?style=for-the-badge&logo=robot&logoColor=white)
 
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi&logoColor=4D96FF)
+![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)
+![Anaconda](https://img.shields.io/badge/Anaconda-%2344A833.svg?style=for-the-badge&logo=anaconda&logoColor=white)
 
 #### 💻 Code & Architecture
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
@@ -44,6 +47,10 @@ I am an Artificial Intelligence & Machine Learning engineering student based in 
 ![VS Code](https://img.shields.io/badge/VS_Code-Development-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
 ![Antigravity](https://img.shields.io/badge/Antigravity-import_antigravity-FFD43B?style=for-the-badge&logo=python&logoColor=3776AB)
+
+![GNU Bash](https://img.shields.io/badge/GNU%20Bash-%234EAA25.svg?style=for-the-badge&logo=GNU%20Bash&logoColor=white)
+![Figma](https://img.shields.io/badge/figma-%23F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white)
+
 ---
 
 ### 📊 GitHub Insights
@@ -54,8 +61,6 @@ I am an Artificial Intelligence & Machine Learning engineering student based in 
 </div>
 
 ---
-
-![Steam](https://img.shields.io/badge/steam-%23000000.svg?style=for-the-badge&logo=steam&logoColor=white)
 
 ### 🤝 Let's Connect
 
@@ -69,5 +74,8 @@ I am an Artificial Intelligence & Machine Learning engineering student based in 
 </div>
 
 <br>
+
+#### 🎮 Desktop Setup
+![Steam](https://img.shields.io/badge/steam-%23000000.svg?style=for-the-badge&logo=steam&logoColor=white)
 
 > *"If a new AI tool or model dropped in the last 24 hours, I've probably already broken its API, tested its limits, and integrated it into a terminal script."*
