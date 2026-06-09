@@ -75,7 +75,9 @@ I am an Artificial Intelligence & Machine Learning engineering student based in 
 
 <br>
 
-#### 🎮 Desktop Setup
-![Steam](https://img.shields.io/badge/steam-%23000000.svg?style=for-the-badge&logo=steam&logoColor=white)
+#### 🎮 Desktop Setup & Tools
+<a href="https://steamcommunity.com/profiles/76561199545795989/" target="_blank">
+  <img src="https://img.shields.io/badge/steam-%23000000.svg?style=for-the-badge&logo=steam&logoColor=white" alt="Steam Profile" />
+</a>
 
 > *"If a new AI tool or model dropped in the last 24 hours, I've probably already broken its API, tested its limits, and integrated it into a terminal script."*
