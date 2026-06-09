@@ -77,5 +77,7 @@ I am an Artificial Intelligence & Machine Learning engineering student based in 
     <img src="https://img.shields.io/badge/Steam-Profile-000000?style=for-the-badge&logo=steam&logoColor=white" alt="Steam" />
   </a>
 </div>
------
+
+---
+
 > *"If a new AI tool or model dropped in the last 24 hours, I've probably already broken its API, tested its limits, and integrated it into a terminal script."*
