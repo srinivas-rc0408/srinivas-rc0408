@@ -49,12 +49,11 @@ I am an Artificial Intelligence & Machine Learning engineering student based in 
 ### 📊 GitHub Insights
 
 <div align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=srinivas-rc0408&show_icons=true&theme=tokyonight&hide_border=true&bg_color=0D1117&title_color=4D96FF&icon_color=4D96FF" alt="Srinivas's Stats" height="175" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=srinivas-rc0408&layout=compact&theme=tokyonight&hide_border=true&bg_color=0D1117&title_color=4D96FF" alt="Top Languages" height="175" />
+  <img src="https://github-readme-stats-sigma-five.vercel.app/api?username=srinivas-rc0408&show_icons=true&theme=tokyonight&hide_border=true&bg_color=0D1117&title_color=4D96FF&icon_color=4D96FF" alt="Srinivas's Stats" height="175" />
+  <img src="https://github-readme-stats-sigma-five.vercel.app/api/top-langs/?username=srinivas-rc0408&layout=compact&theme=tokyonight&hide_border=true&bg_color=0D1117&title_color=4D96FF" alt="Top Languages" height="175" />
 </div>
 
 ---
-
 ### 🤝 Let's Connect
 
 <div align="center">
