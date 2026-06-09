@@ -19,13 +19,6 @@ I am an Artificial Intelligence & Machine Learning engineering student based in 
 
 ### 🧰 The Tech Stack Ecosystem
 
-#### 🧠 Artificial Intelligence & Machine Learning
-![Prompt Engineering](https://img.shields.io/badge/Prompt%20Engineering-Expert-FF6B6B?style=for-the-badge&logo=openai&logoColor=white)
-![Ollama](https://img.shields.io/badge/Ollama-Local_LLMs-black?style=for-the-badge&logo=ollama&logoColor=white)
-![Claude](https://img.shields.io/badge/Claude-Integration-D97757?style=for-the-badge&logo=anthropic&logoColor=white)
-![Agentic Workflows](https://img.shields.io/badge/Agentic_Workflows-Archagent-4D96FF?style=for-the-badge&logo=robot&logoColor=white)
-![Abacus AI](https://img.shields.io/badge/Abacus_AI-Exploration-8A2BE2?style=for-the-badge)
-![Sourcery AI](https://img.shields.io/badge/Sourcery_AI-Code_Assist-00B4D8?style=for-the-badge)
 
 #### 🧠 Artificial Intelligence & Machine Learning
 ![Prompt Engineering](https://img.shields.io/badge/Prompt%20Engineering-Expert-FF6B6B?style=for-the-badge&logo=openai&logoColor=white)
@@ -33,6 +26,9 @@ I am an Artificial Intelligence & Machine Learning engineering student based in 
 ![Cursor](https://img.shields.io/badge/Cursor-AI_Editor-000000?style=for-the-badge&logo=cursor&logoColor=white)
 ![v0](https://img.shields.io/badge/v0-Generative_UI-000000?style=for-the-badge&logo=vercel&logoColor=white)
 ![Claude](https://img.shields.io/badge/Claude-Integration-D97757?style=for-the-badge&logo=anthropic&logoColor=white)
+![Google AI Studio](https://img.shields.io/badge/Google_AI_Studio-Prototyping-4285F4?style=for-the-badge&logo=google&logoColor=white)
+![VS Code](https://img.shields.io/badge/VS_Code-Development-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white)
+![Antigravity](https://img.shields.io/badge/Antigravity-import_antigravity-FFD43B?style=for-the-badge&logo=python&logoColor=3776AB)
 ![Agentic Workflows](https://img.shields.io/badge/Agentic_Workflows-Archagent-4D96FF?style=for-the-badge&logo=robot&logoColor=white)
 ![Abacus AI](https://img.shields.io/badge/Abacus_AI-Exploration-8A2BE2?style=for-the-badge)
 ![Sourcery AI](https://img.shields.io/badge/Sourcery_AI-Code_Assist-00B4D8?style=for-the-badge)
