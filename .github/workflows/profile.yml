@@ -1,0 +1,72 @@
+name: Refresh profile cards
+
+# Builds the stats card, languages card and contribution snake inside this repo,
+# so the README never depends on a shared, rate-limited image server again.
+
+on:
+  schedule:
+    - cron: "30 0 * * *" # 06:00 IST, every day
+  workflow_dispatch: # "Run workflow" button in the Actions tab
+  push:
+    branches: [main]
+    paths: [".github/workflows/profile.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: profile-cards
+  cancel-in-progress: true
+
+jobs:
+  cards:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      # GITHUB_TOKEN counts public work only.
+      # To count private contributions: create a fine-grained token (read-only, all repos),
+      # save it as the repo secret PROFILE_PAT, swap both tokens below to
+      # ${{ secrets.PROFILE_PAT }}, and add "count_private": true to the stats options.
+      - name: Stats card
+        uses: stats-organization/github-readme-stats-action@v2
+        with:
+          card: stats
+          options: >-
+            {"username":"srinivas-rc0408","show_icons":true,"include_all_commits":true,
+            "hide_rank":true,"hide_border":true,"border_radius":10,
+            "bg_color":"0B1018","title_color":"4D96FF","icon_color":"1793D1","text_color":"E6EDF3"}
+          path: profile/stats.svg
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Languages card
+        uses: stats-organization/github-readme-stats-action@v2
+        with:
+          card: top-langs
+          options: >-
+            {"username":"srinivas-rc0408","layout":"compact","langs_count":8,"hide":"html,css",
+            "hide_border":true,"border_radius":10,
+            "bg_color":"0B1018","title_color":"4D96FF","text_color":"E6EDF3"}
+          path: profile/top-langs.svg
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Contribution snake
+        uses: Platane/snk/svg-only@v3
+        with:
+          github_user_name: srinivas-rc0408
+          outputs: |
+            profile/snake-dark.svg?color_snake=#F2545B&color_dots=#161B22,#0E3A6E,#1F5FBF,#3B82F6,#79B8FF
+            profile/snake-light.svg?color_snake=#E5484D&color_dots=#EBEDF0,#C6DDFF,#8AB8FF,#4D96FF,#1F5FBF
+
+      - name: Commit if anything changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add profile/
+          if git diff --cached --quiet; then
+            echo "Cards unchanged."
+            exit 0
+          fi
+          git commit -m "chore: refresh profile cards"
+          git push
