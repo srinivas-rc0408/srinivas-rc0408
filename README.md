@@ -1,83 +1,71 @@
-# ⚡ Hello World, I'm Srinivas R C 
+<!-- You opened the source. Respect. Say hi: srinivasrc0408@gmail.com -->
 
-<div align="left">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=500&size=22&pause=1000&color=4D96FF&vCenter=true&width=600&lines=BTech+CSE+(AIML)+at+REVA+University;Building+Agentic+AI+Workflows;Crafting+Minimalist+User+Interfaces;Linux+Power+User+%26+Tech+Explorer" alt="Typing SVG" />
-</div>
+<a href="https://srinivas-rc.is-a.dev">
+  <img src="./assets/hero.svg" width="100%" alt="Terminal running fastfetch: S10 drawn in contribution squares, next to Srinivas R C's details — AI/ML engineer, B.Tech AI & ML at REVA University, building offline LLM agents such as AEGIS for Smart India Hackathon 2026." />
+</a>
 
-I am an Artificial Intelligence & Machine Learning engineering student based in Bengaluru, India. I specialize in rapid AI prototyping, crafting autonomous workflows, and designing ultra-clean, high-performance web applications. When I'm not preparing for 2026 tech placements, I'm stress-testing newly dropped AI models in my terminal.
+I build AI systems for places the cloud can't reach: air-gapped industrial sites, and a laptop with 4 GB of VRAM.
 
----
+Final-year B.Tech AI & ML student at REVA University, Bengaluru. Open to AI/ML and SDE internships and 2027 full-time roles.
 
-### 🚀 What I'm Building & Exploring
+## ~/now
 
-- 🤖 **AI & Agentic Workflows:** Developing projects like **Archagent**, creating dynamic datasets, and engineering complex prompts for autonomous systems.
-- 🎨 **Minimalist Engineering:** Building single-page utility sites (like language detectors) with a focus on a "buttery smooth" Studio aesthetic.
-- ⚙️ **System Optimization:** Living in the command line on Arch-based systems (**CachyOS**), maximizing developer velocity and system performance.
-- 🏆 **Continuous Growth:** Microsoft Software Engineering Workshop Alumni (June 2025) and currently cracking advanced data structures and algorithms.
+**[AEGIS](https://github.com/srinivas-rc0408/aegis)** — Air-Gapped Engineering Intelligence System  
+An offline agentic AI workbench for confidential industrial work at Mangalore Refinery (MRPL), built for Smart India Hackathon 2026, problem statement SIH26117. A LangGraph ReAct loop plans the task, inspects images with moondream2, retrieves from internal documents through FAISS, runs calculations in a sandboxed Python runtime inside Docker, then audits its own answer. Reasoning runs on Qwen2.5-7B through Ollama, on a 4 GB laptop GPU. No data leaves the machine.  
+`LangGraph` `Ollama` `Qwen2.5-7B` `moondream2` `FAISS` `FastAPI` `Docker` `Streamlit`
 
----
+**[Codebase Migration Agent](https://github.com/srinivas-rc0408/codebase-migration-agent)** — internship project, REVA Center for AI & ML  
+An LLM agent that upgrades an entire codebase across breaking version changes. It reads the code through AST and static analysis, orders edits with a dependency graph, and works in a plan → edit → test → self-correct loop inside a Docker sandbox. Deliverables: the agent, a migration patch, audit logs, a benchmark report, and a research paper.  
+`Python` `AST` `LLM agents` `Docker`
 
-### 🧰 The Tech Stack Ecosystem
+## ~/shipped
 
+**[AquaSentinel](https://github.com/srinivas-rc0408/aquasentinel)** · [live demo](https://aqua-wheat.vercel.app)  
+Mission control for an autonomous underwater inspection robot: live sensor telemetry, robot health, camera control, a waypoint route planner, AI image defect detection, and PDF inspection reports. Designed from a 13-document engineering spec (PRD, API contract, DB schema, security spec, 40+ tickets) before a line of code was written.  
+`React 19` `Vite` `TypeScript` `Express` `Postgres (Neon)`
 
-#### 🧠 Artificial Intelligence & Machine Learning
-![Prompt Engineering](https://img.shields.io/badge/Prompt%20Engineering-Expert-FF6B6B?style=for-the-badge&logo=openai&logoColor=white)
-![Google AI Studio](https://img.shields.io/badge/Google_AI_Studio-Prototyping-4285F4?style=for-the-badge&logo=google&logoColor=white)
-![Ollama](https://img.shields.io/badge/Ollama-Local_LLMs-black?style=for-the-badge&logo=ollama&logoColor=white)
-![Cursor](https://img.shields.io/badge/Cursor-AI_Editor-000000?style=for-the-badge&logo=cursor&logoColor=white)
-![v0](https://img.shields.io/badge/v0-Generative_UI-000000?style=for-the-badge&logo=vercel&logoColor=white)
-![Claude](https://img.shields.io/badge/Claude-Integration-D97757?style=for-the-badge&logo=anthropic&logoColor=white)
-![Agentic Workflows](https://img.shields.io/badge/Agentic_Workflows-Archagent-4D96FF?style=for-the-badge&logo=robot&logoColor=white)
+**[ArchAgent](https://github.com/srinivas-rc0408/archagent)**  
+Turns a plain-language building brief into 3D panoramic renders and an itemised cost estimate in under 60 seconds. A multi-stage Gemini pipeline; few-shot price anchors in INR stopped the cost estimator from hallucinating numbers.  
+`React` `TypeScript` `Gemini API`
 
-![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi&logoColor=4D96FF)
-![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)
-![Anaconda](https://img.shields.io/badge/Anaconda-%2344A833.svg?style=for-the-badge&logo=anaconda&logoColor=white)
+**[health-risk-mlops](https://github.com/srinivas-rc0408/health-risk-mlops)**  
+A health-risk prediction model taken all the way to production shape: served by FastAPI, packaged in Docker, experiments tracked in MLflow, tested and shipped by GitHub Actions.  
+`FastAPI` `Docker` `MLflow` `GitHub Actions`
 
-#### 💻 Code & Architecture
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![C++](https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+**[Debug.ext](https://github.com/srinivas-rc0408/debug-ext)**  
+A Chrome extension that catches runtime errors, failed network requests, and log files, sorts each into one of five classes with a P0–P3 priority, and drafts a fix. FastAPI and SQLite behind it, a Streamlit dashboard and PDF reports in front.  
+`Chrome MV3` `FastAPI` `SQLite` `Streamlit`
 
+More: my [portfolio](https://srinivas-rc.is-a.dev) has a RAG chatbot you can ask about me, and my [dotfiles](https://github.com/srinivas-rc0408/dotfiles) are the Arch + niri + fish setup this page is drawn from.
 
-#### 🛠️ Environment & Tools
-![Arch Linux](https://img.shields.io/badge/Arch_Linux-CachyOS-1793D1?style=for-the-badge&logo=arch-linux&logoColor=white)
-![VS Code](https://img.shields.io/badge/VS_Code-Development-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white)
-![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
-![Antigravity](https://img.shields.io/badge/Antigravity-import_antigravity-FFD43B?style=for-the-badge&logo=python&logoColor=3776AB)
+## ~/stack
 
-![GNU Bash](https://img.shields.io/badge/GNU%20Bash-%234EAA25.svg?style=for-the-badge&logo=GNU%20Bash&logoColor=white)
-![Figma](https://img.shields.io/badge/figma-%23F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white)
+| | |
+|---|---|
+| **LLM systems** | LangGraph, Ollama, FAISS, ChromaDB, sentence-transformers, Gemini API |
+| **ML + MLOps** | Python, NumPy, MLflow, Docker, GitHub Actions |
+| **Backend** | FastAPI, Express, PostgreSQL (Neon), SQLite |
+| **Frontend** | TypeScript, React, Next.js, Vite, Streamlit |
+| **Systems** | Arch Linux, Bash, fish, Git, C++ |
 
----
+## ~/activity
 
-### 📊 GitHub Insights
+<p>
+  <img src="./profile/stats.svg" height="165" alt="GitHub stats for srinivas-rc0408" />
+  <img src="./profile/top-langs.svg" height="165" alt="Most used languages for srinivas-rc0408" />
+</p>
 
-<div align="center">
-  <img src="https://github-readme-stats-sigma-five.vercel.app/api?username=srinivas-rc0408&show_icons=true&theme=tokyonight&hide_border=true&bg_color=0D1117&title_color=4D96FF&icon_color=4D96FF" alt="Srinivas's Stats" height="175" />
-  <img src="https://github-readme-stats-sigma-five.vercel.app/api/top-langs/?username=srinivas-rc0408&layout=compact&theme=tokyonight&hide_border=true&bg_color=0D1117&title_color=4D96FF" alt="Top Languages" height="175" />
-</div>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./profile/snake-dark.svg" />
+  <source media="(prefers-color-scheme: light)" srcset="./profile/snake-light.svg" />
+  <img src="./profile/snake-dark.svg" width="100%" alt="A snake eating the last year of contributions, square by square" />
+</picture>
 
----
+## ~/contact
 
----
+<a href="https://srinivas-rc.is-a.dev"><img src="https://img.shields.io/badge/portfolio-srinivas--rc.is--a.dev-4D96FF?style=for-the-badge&labelColor=161B22" alt="Portfolio: srinivas-rc.is-a.dev" /></a>
+<a href="https://www.linkedin.com/in/srinivas-r-c-169406294"><img src="https://img.shields.io/badge/linkedin-srinivas%20r%20c-0A66C2?style=for-the-badge&labelColor=161B22&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAyNCAyNCc%2BPHBhdGggZmlsbD0nd2hpdGUnIGQ9J000Ljk4IDMuNWEyLjUgMi41IDAgMSAxIDAgNSAyLjUgMi41IDAgMCAxIDAtNXpNMyA5LjVoNFYyMUgzek05LjUgOS41aDMuOHYxLjZoLjA1Yy41My0xIDEuODMtMi4wNSAzLjc3LTIuMDUgNC4wMyAwIDQuNzggMi42NSA0Ljc4IDYuMVYyMWgtNHYtNS4xYzAtMS4yMi0uMDItMi43OC0xLjctMi43OC0xLjcgMC0xLjk2IDEuMzMtMS45NiAyLjdWMjFoLTR6Jy8%2BPC9zdmc%2B" alt="LinkedIn: Srinivas R C" /></a>
+<a href="mailto:srinivasrc0408@gmail.com"><img src="https://img.shields.io/badge/email-srinivasrc0408%40gmail.com-F2545B?style=for-the-badge&labelColor=161B22&logo=gmail&logoColor=white" alt="Email: srinivasrc0408@gmail.com" /></a>
+<a href="https://steamcommunity.com/profiles/76561199545795989/"><img src="https://img.shields.io/badge/steam-off%20the%20clock-1B2838?style=for-the-badge&labelColor=161B22&logo=steam&logoColor=white" alt="Steam profile" /></a>
 
-### 🤝 Let's Connect
-
-<div align="left">
-  <a href="https://www.linkedin.com/in/srinivas-r-c-169406294?utm_source=share_via&utm_content=profile&utm_medium=member_ios" target="_blank">
-    <img src="https://img.shields.io/badge/LinkedIn-Connect-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
-  </a>
-  <a href="mailto:srinivasrc0408@gmail.com">
-    <img src="https://img.shields.io/badge/Email-Reach_Out-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" />
-  </a>
-  <a href="https://steamcommunity.com/profiles/76561199545795989/" target="_blank">
-    <img src="https://img.shields.io/badge/Steam-Profile-000000?style=for-the-badge&logo=steam&logoColor=white" alt="Steam" />
-  </a>
-</div>
-
----
-
-> *"If a new AI tool or model dropped in the last 24 hours, I've probably already broken its API, tested its limits, and integrated it into a terminal script."*
+<sub><code>srinivas@s10 ~&gt; exit</code></sub>
