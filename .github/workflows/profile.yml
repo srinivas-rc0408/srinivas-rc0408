@@ -1,12 +1,11 @@
-name: Refresh profile cards
+name: Refresh profile snake
 
-# Builds the stats card, languages card and contribution snake inside this repo,
-# so the README never depends on a shared, rate-limited image server again.
+# Rebuilds the monochrome contribution snake every day, inside this repo.
 
 on:
   schedule:
-    - cron: "30 0 * * *" # 06:00 IST, every day
-  workflow_dispatch: # "Run workflow" button in the Actions tab
+    - cron: "30 0 * * *" # 06:00 IST
+  workflow_dispatch:
   push:
     branches: [main]
     paths: [".github/workflows/profile.yml"]
@@ -19,54 +18,28 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  cards:
+  snake:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
 
-      # GITHUB_TOKEN counts public work only.
-      # To count private contributions: create a fine-grained token (read-only, all repos),
-      # save it as the repo secret PROFILE_PAT, swap both tokens below to
-      # ${{ secrets.PROFILE_PAT }}, and add "count_private": true to the stats options.
-      - name: Stats card
-        uses: stats-organization/github-readme-stats-action@v2
-        with:
-          card: stats
-          options: >-
-            {"username":"srinivas-rc0408","show_icons":true,"include_all_commits":true,
-            "hide_rank":true,"hide_border":true,"border_radius":10,
-            "bg_color":"0B1018","title_color":"4D96FF","icon_color":"1793D1","text_color":"E6EDF3"}
-          path: profile/stats.svg
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Languages card
-        uses: stats-organization/github-readme-stats-action@v2
-        with:
-          card: top-langs
-          options: >-
-            {"username":"srinivas-rc0408","layout":"compact","langs_count":8,"hide":"html,css",
-            "hide_border":true,"border_radius":10,
-            "bg_color":"0B1018","title_color":"4D96FF","text_color":"E6EDF3"}
-          path: profile/top-langs.svg
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Contribution snake
+      - name: Contribution snake (black and white)
         uses: Platane/snk/svg-only@v3
         with:
           github_user_name: srinivas-rc0408
           outputs: |
-            profile/snake-dark.svg?color_snake=#F2545B&color_dots=#161B22,#0E3A6E,#1F5FBF,#3B82F6,#79B8FF
-            profile/snake-light.svg?color_snake=#E5484D&color_dots=#EBEDF0,#C6DDFF,#8AB8FF,#4D96FF,#1F5FBF
+            profile/snake-dark.svg?color_snake=#FFFFFF&color_dots=#161616,#3A3A3A,#6E6E6E,#A8A8A8,#E6E6E6
+            profile/snake-light.svg?color_snake=#000000&color_dots=#EDEDED,#C4C4C4,#8C8C8C,#555555,#1A1A1A
 
       - name: Commit if anything changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add profile/
+          git add -A profile/
           if git diff --cached --quiet; then
-            echo "Cards unchanged."
+            echo "Snake unchanged."
             exit 0
           fi
-          git commit -m "chore: refresh profile cards"
+          git commit -m "chore: refresh profile snake"
           git push

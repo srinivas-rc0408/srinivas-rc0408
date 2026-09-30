@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="64" viewBox="0 0 960 64" role="img" aria-labelledby="t d"><title id="t">~/shipped</title><desc id="d">finished and public</desc><style>
+text{font-family:ui-monospace,'SFMono-Regular','JetBrains Mono','Cascadia Mono','DejaVu Sans Mono',Menlo,Consolas,'Liberation Mono',monospace;fill:#FFFFFF}
+.g1{fill:#A3A3A3} .g2{fill:#5C5C5C} .b{font-weight:700}
+@keyframes show{from{opacity:0}to{opacity:1}}
+@keyframes blink{0%{opacity:1}50%{opacity:0}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes march{to{stroke-dashoffset:-16}}
+.cu{animation:blink 1.06s step-end infinite}@media (prefers-reduced-motion:reduce){*{animation:none!important}}</style><rect width="960" height="64" fill="#000000"/><text x="24" y="41" font-size="22" class="b">~/shipped</text><rect class="cu" x="148.8" y="24" width="11" height="20" fill="#FFFFFF"/><line x1="176.8" x2="767.8" y1="34" y2="34" stroke="#262626"/><text x="936" y="39" font-size="13" class="g2" text-anchor="end">finished and public</text></svg>
