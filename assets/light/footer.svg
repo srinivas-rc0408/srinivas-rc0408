@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="84" viewBox="0 0 960 84" role="img" aria-labelledby="t d"><title id="t">exit</title><desc id="d">srinivas@s10 exit. Process completed. Made in Bengaluru on Arch Linux.</desc><style>
+text{font-family:ui-monospace,'SFMono-Regular','JetBrains Mono','Cascadia Mono','DejaVu Sans Mono',Menlo,Consolas,'Liberation Mono',monospace;fill:#1F2328}
+.f2{fill:#59636E} .f3{fill:#818B98} .b{font-weight:700}
+@keyframes show{from{opacity:0}to{opacity:1}}
+@keyframes blink{0%{opacity:1}50%{opacity:0}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes march{to{stroke-dashoffset:-16}}
+@keyframes ring{0%{transform:scale(.6);opacity:.7}100%{transform:scale(2.4);opacity:0}}
+.cu{animation:blink 1.06s step-end infinite}@media (prefers-reduced-motion:reduce){*{animation:none!important}}</style><path d="M4 1H956" stroke="rgba(31,35,40,0.13)"/><text x="4" y="40" font-size="15"><tspan class="b">srinivas@s10</tspan><tspan class="f2"> ~&gt; </tspan>exit</text><text x="4" y="64" font-size="13" class="f3">[process completed]</text><rect class="cu" x="184" y="52" width="9" height="15" rx="1.5" fill="#1F2328"/><text x="956" y="64" font-size="12" class="f3" text-anchor="end">made in Bengaluru on Arch Linux</text></svg>

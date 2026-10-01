@@ -1,6 +1,6 @@
 name: Refresh profile snake
 
-# Rebuilds the monochrome contribution snake every day, inside this repo.
+# Rebuilds the contribution snake every day, inside this repo.
 
 on:
   schedule:
@@ -24,13 +24,14 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Contribution snake (black and white)
+      # Ice palette: glass-blue squares, white snake (dark); deep-ice snake (light).
+      - name: Contribution snake
         uses: Platane/snk/svg-only@v3
         with:
           github_user_name: srinivas-rc0408
           outputs: |
-            profile/snake-dark.svg?color_snake=#FFFFFF&color_dots=#161616,#3A3A3A,#6E6E6E,#A8A8A8,#E6E6E6
-            profile/snake-light.svg?color_snake=#000000&color_dots=#EDEDED,#C4C4C4,#8C8C8C,#555555,#1A1A1A
+            profile/snake-dark.svg?color_snake=#F0F3F6&color_dots=#161B22,#123247,#1F5A7A,#3E95BF,#A5DCF5
+            profile/snake-light.svg?color_snake=#0B3550&color_dots=#EBEEF1,#CFE6F3,#8CC6E4,#3C96C3,#165A7E
 
       - name: Commit if anything changed
         run: |
