@@ -1,37 +1,84 @@
-"""Generates every SVG for the srinivas-rc0408 profile README. Monochrome. Run: python3 build.py"""
-import math, random
+"""S10 profile README generator: frosted-glass, monochrome, dark + light themes.
+Run: python3 build.py   ->  assets/dark/*.svg, assets/light/*.svg, README.md"""
+import math, random, os
 from xml.sax.saxutils import escape as esc
 
-BK, W = "#000000", "#FFFFFF"
-G1, G2, G3, G4 = "#A3A3A3", "#5C5C5C", "#262626", "#141414"
 MONO = "ui-monospace,'SFMono-Regular','JetBrains Mono','Cascadia Mono','DejaVu Sans Mono',Menlo,Consolas,'Liberation Mono',monospace"
-OUT = "assets/"
 
-BASE_CSS = f"""
-text{{font-family:{MONO};fill:{W}}}
-.g1{{fill:{G1}}} .g2{{fill:{G2}}} .b{{font-weight:700}}
+def rgba(hex_, a):
+    h = hex_.lstrip("#"); r, g, b = (int(h[i:i+2], 16) for i in (0, 2, 4))
+    return f"rgba({r},{g},{b},{a})"
+
+THEMES = {
+    "dark": dict(fg="#F0F3F6", fg2="#9198A1", fg3="#656C76", ink="#FFFFFF", solid="#12161D", inv="#0D1117",
+                 glass=.035, line=.11, dim1=.30, dim2=.12, orb=.10, sheen=.06, sq=[.07, .28, .55, .82, 1.0]),
+    "light": dict(fg="#1F2328", fg2="#59636E", fg3="#818B98", ink="#1F2328", solid="#F3F5F7", inv="#FFFFFF",
+                  glass=.025, line=.13, dim1=.30, dim2=.11, orb=.035, sheen=.35, sq=[.07, .22, .45, .72, .92]),
+}
+
+class T:  # active theme accessor
+    pass
+
+def use(name):
+    t = THEMES[name]
+    for k, v in t.items(): setattr(T, k, v)
+    T.name = name
+    T.d1 = rgba(T.ink, T.dim1); T.d2 = rgba(T.ink, T.dim2)
+    T.ln = rgba(T.ink, T.line)
+    T.sqc = [rgba(T.ink, a) for a in T.sq]
+
+def base_css():
+    return f"""
+text{{font-family:{MONO};fill:{T.fg}}}
+.f2{{fill:{T.fg2}}} .f3{{fill:{T.fg3}}} .b{{font-weight:700}}
 @keyframes show{{from{{opacity:0}}to{{opacity:1}}}}
 @keyframes blink{{0%{{opacity:1}}50%{{opacity:0}}}}
 @keyframes pulse{{0%,100%{{opacity:1}}50%{{opacity:.25}}}}
 @keyframes spin{{to{{transform:rotate(360deg)}}}}
 @keyframes march{{to{{stroke-dashoffset:-16}}}}
+@keyframes ring{{0%{{transform:scale(.6);opacity:.7}}100%{{transform:scale(2.4);opacity:0}}}}
 """
 RM = "@media (prefers-reduced-motion:reduce){*{animation:none!important}}"
 
 def svg(w, h, title, desc, css, body):
     return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img" aria-labelledby="t d">'
             f'<title id="t">{esc(title)}</title><desc id="d">{esc(desc)}</desc>'
-            f'<style>{BASE_CSS}{css}{RM}</style>{body}</svg>')
-
-def crop_marks(x, y, w, h, L=14, col=W):
-    p = []
-    for (cx, cy, dx, dy) in [(x, y, 1, 1), (x+w, y, -1, 1), (x, y+h, 1, -1), (x+w, y+h, -1, -1)]:
-        p.append(f'<path d="M{cx} {cy+dy*L}V{cy}H{cx+dx*L}" fill="none" stroke="{col}" stroke-width="1.5"/>')
-    return "".join(p)
+            f'<style>{base_css()}{css}{RM}</style>{body}</svg>')
 
 def write(name, s):
-    open(OUT + name, "w").write(s)
-    print(f"{name:26s} {len(s)/1024:6.1f} KB")
+    os.makedirs("assets", exist_ok=True)
+    open(f"assets/{name}", "w").write(s)
+
+def glass(w, h, r=16, orbs=(), drift=False, sheen=False):
+    """Frosted panel: blurred light blobs behind a translucent pane, hairline border, top highlight."""
+    o = [f'<defs><clipPath id="gc"><rect x="1" y="1" width="{w-2}" height="{h-2}" rx="{r}"/></clipPath>'
+         f'<filter id="bl" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="42"/></filter>'
+         f'<linearGradient id="gv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{T.ink}" stop-opacity="{T.glass*2.2}"/>'
+         f'<stop offset=".45" stop-color="{T.ink}" stop-opacity="{T.glass}"/><stop offset="1" stop-color="{T.ink}" stop-opacity="{T.glass*.6}"/></linearGradient>'
+         f'<linearGradient id="gt" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="{T.ink}" stop-opacity="0"/>'
+         f'<stop offset=".5" stop-color="{T.ink}" stop-opacity="{.45 if T.name=="dark" else .25}"/><stop offset="1" stop-color="{T.ink}" stop-opacity="0"/></linearGradient>'
+         f'<linearGradient id="sh" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/>'
+         f'<stop offset=".5" stop-color="#fff" stop-opacity="{T.sheen}"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>',
+         f'<rect x=".5" y=".5" width="{w-1}" height="{h-1}" rx="{r}" fill="#0D1117"/>',
+         '<g clip-path="url(#gc)">']
+    for i, (cx, cy, rr) in enumerate(orbs):
+        cls = f' class="od{i%3}"' if drift else ""
+        o.append(f'<circle{cls} cx="{cx}" cy="{cy}" r="{rr}" fill="{T.ink}" fill-opacity="{T.orb}" filter="url(#bl)"/>')
+    o.append(f'<rect width="{w}" height="{h}" fill="url(#gv)"/>')
+    if sheen:
+        o.append(f'<rect class="sheen" x="-300" y="-40" width="220" height="{h+80}" fill="url(#sh)" transform="skewX(-18)"/>')
+    o.append('</g>')
+    o.append(f'<rect x=".5" y=".5" width="{w-1}" height="{h-1}" rx="{r}" fill="none" stroke="{T.ln}"/>')
+    o.append(f'<path d="M{r} .75H{w-r}" stroke="url(#gt)" stroke-width="1.2"/>')
+    css = ""
+    if drift:
+        css += """
+.od0{animation:d0 26s ease-in-out infinite}.od1{animation:d1 32s ease-in-out infinite}.od2{animation:d2 29s ease-in-out infinite}
+@keyframes d0{50%{transform:translate(120px,40px)}}@keyframes d1{50%{transform:translate(-140px,-30px)}}@keyframes d2{50%{transform:translate(60px,-60px)}}
+"""
+    if sheen:
+        css += f".sheen{{animation:sh 11s ease-in-out 3s infinite}}@keyframes sh{{0%{{transform:skewX(-18deg) translateX(0)}}22%,100%{{transform:skewX(-18deg) translateX({w+600}px)}}}}"
+    return "".join(o), css
 
 GLYPHS = {
     "S": [".####", "#....", "#....", ".###.", "....#", "....#", "####."],
@@ -39,420 +86,467 @@ GLYPHS = {
     "0": [".###.", "#...#", "#..##", "#.#.#", "##..#", "#...#", ".###."],
 }
 
-# ------------------------------------------------------------------ HERO
+# =================================================================== HERO
 def hero():
-    Wd, H = 960, 470
-    rnd = random.Random(10)
-    b = [f'<rect width="{Wd}" height="{H}" fill="{BK}"/>']
-    # faint dot field
-    b.append('<g>')
-    for x in range(24, Wd, 24):
-        for y in range(24, H - 70, 24):
-            b.append(f'<circle cx="{x}" cy="{y}" r="1" fill="{G4}"/>')
-    b.append('</g>')
-    # a few twinkling field dots
-    for i in range(10):
-        x = 24 * rnd.randint(1, 39); y = 24 * rnd.randint(1, 16)
-        b.append(f'<circle class="tw" cx="{x}" cy="{y}" r="1.4" fill="{G2}" style="animation-delay:{rnd.uniform(0, 6):.2f}s"/>')
-    b.append(crop_marks(16, 16, Wd - 32, H - 32))
-    # top meta
-    b.append(f'<text x="40" y="48" class="g2" font-size="12">srinivas-rc0408 / readme</text>')
-    b.append(f'<text x="{Wd-40}" y="48" class="g2" font-size="12" text-anchor="end">12.97&#176; N  77.59&#176; E</text>')
+    Wd, H = 960, 610
+    FS, CW, LH = 15, 9.0, 23
+    rnd = random.Random(1008)
+    g, gcss = glass(Wd, H, 20, orbs=[(170, 220, 170), (820, 120, 150), (600, 560, 190)], drift=True, sheen=True)
+    b = [g]
+    # title bar
+    b.append(f'<text x="{Wd/2}" y="27" font-size="12" class="f3" text-anchor="middle">fish  /  srinivas@s10  /  ~</text>')
+    b.append(f'<path d="M1 42H{Wd-1}" stroke="{T.ln}"/>')
+    for i in range(3):
+        b.append(f'<circle cx="{26+i*18}" cy="22" r="5" fill="none" stroke="{T.d1}"/>')
+    PX = 44
+    prompt = f'<tspan class="b">srinivas@s10</tspan><tspan class="f2"> ~&gt; </tspan>'
+    PC = len("srinivas@s10 ~> ")
+    y1 = 82
+    b.append(f'<text x="{PX}" y="{y1}" font-size="{FS}">{prompt}</text>')
+    cx0 = PX + PC * CW
+    for i, ch in enumerate("fastfetch"):
+        b.append(f'<text class="in" x="{cx0+i*CW:.1f}" y="{y1}" font-size="{FS}" style="animation-delay:{0.35+(i+1)*0.07:.2f}s">{ch}</text>')
+    b.append(f'<rect class="cur1" x="{cx0:.1f}" y="{y1-13}" width="{CW}" height="17" rx="1.5" fill="{T.fg}"/>')
 
-    # S10 dot matrix, assembling from scattered positions
-    pitch, r = 24, 8.2
-    gx, gy = 52, 98
-    col0 = 0
-    dots = []
-    for g in "S10":
-        for ri, row in enumerate(GLYPHS[g]):
-            for ci, v in enumerate(row):
-                if v == "#":
-                    dots.append((gx + (col0 + ci) * pitch + pitch / 2, gy + ri * pitch + pitch / 2))
-        col0 += 6
-    b.append('<g>')
-    for i, (x, y) in enumerate(dots):
-        dx, dy = rnd.uniform(-260, 380), rnd.uniform(-160, 220)
-        d = 0.25 + rnd.uniform(0, 0.9)
-        b.append(f'<circle class="ab" cx="{x:.1f}" cy="{y:.1f}" r="{r}" fill="{W}" '
-                 f'style="--dx:{dx:.0f}px;--dy:{dy:.0f}px;animation-delay:{d:.2f}s"/>')
-    b.append('</g>')
-    # ghost grid of the unlit matrix cells
-    b.append('<g>')
-    for c in range(17):
-        for ri in range(7):
-            x, y = gx + c * pitch + pitch / 2, gy + ri * pitch + pitch / 2
-            if not any(abs(x - px) < 1 and abs(y - py) < 1 for px, py in dots):
-                b.append(f'<circle cx="{x:.1f}" cy="{y:.1f}" r="2" fill="{G3}"/>')
-    b.append('</g>')
-    # looping scan line across the matrix
-    mw = 17 * pitch
-    b.append(f'<g class="scanwrap"><rect class="scan" x="{gx}" y="{gy-6}" width="2" height="{7*pitch+12}" fill="{W}"/></g>')
+    cell, gap = 13, 4; pitch = cell + gap
+    cols, rows = 19, 9
+    gx, gy = PX, 132
+    lit, c0 = set(), 1
+    for gl in "S10":
+        for r, row in enumerate(GLYPHS[gl]):
+            for c, v in enumerate(row):
+                if v == "#": lit.add((c0 + c, 1 + r))
+        c0 += 6
+    for c in range(cols):
+        for r in range(rows):
+            x, y = gx + c*pitch, gy + r*pitch
+            d = 1.10 + c*0.034 + r*0.011
+            if (c, r) in lit:
+                col = rnd.choices(T.sqc[2:], [2, 3, 5])[0]
+                b.append(f'<rect class="cell" x="{x}" y="{y}" width="{cell}" height="{cell}" rx="3.5" fill="{col}" style="animation-delay:{d:.3f}s"/>')
+            else:
+                near = any((c+dx, r+dy) in lit for dx in (-1,0,1) for dy in (-1,0,1))
+                col = T.sqc[1] if (rnd.random() < 0.10 and not near) else T.sqc[0]
+                cls = ' class="cell"' if col != T.sqc[0] else ""
+                b.append(f'<rect{cls} x="{x}" y="{y}" width="{cell}" height="{cell}" rx="3.5" fill="{col}" style="animation-delay:{d:.3f}s"/>')
+    gw, gh = cols*pitch - gap, rows*pitch - gap
+    ly = gy + gh + 26
+    lx = gx + gw - 5*14 - 30
+    b.append(f'<g class="in" style="animation-delay:1.95s"><text x="{lx-36}" y="{ly}" font-size="12" class="f3">Less</text>')
+    for i, col in enumerate(T.sqc):
+        b.append(f'<rect x="{lx+i*14}" y="{ly-10}" width="10" height="10" rx="2.5" fill="{col}"/>')
+    b.append(f'<text x="{lx+5*14+4}" y="{ly}" font-size="12" class="f3">More</text></g>')
+    b.append(f'<g class="in" style="animation-delay:2.05s">'
+             f'<text x="{gx}" y="{ly+52}" font-size="28" class="b" letter-spacing=".5">Srinivas R C</text>'
+             f'<text x="{gx}" y="{ly+78}" font-size="13" class="f2">AI engineer, Bengaluru</text>'
+             f'<text x="{gx}" y="{ly+100}" font-size="13" class="f3">github.com/srinivas-rc0408</text></g>')
 
-    # name
-    b.append(f'<g class="in" style="animation-delay:1.35s"><text x="{gx+4}" y="{gy+7*pitch+58}" font-size="34" class="b" letter-spacing="1">Srinivas R C</text>'
-             f'<text x="{gx+4}" y="{gy+7*pitch+84}" font-size="14" class="g1">AI/ML engineer, Bengaluru</text></g>')
-
-    # right column: scrambled tagline
-    RX = 520
-    lines = ["I build AI that runs", "where the cloud can't."]
-    fs, cw = 22, 22 * 0.6
-    charset = "01#$%&*+<>/\\=?ABCDEFGHJKLMNPQRSTUVWXYZ"
-    t = 1.0
-    for li, line in enumerate(lines):
-        y = 118 + li * 34
-        for i, ch in enumerate(line):
-            if ch == " ":
-                continue
-            x = RX + i * cw
-            start = t + i * 0.035
-            for k in range(3):
-                g = rnd.choice(charset)
-                b.append(f'<text class="sc g1" x="{x:.1f}" y="{y}" font-size="{fs}" style="animation-delay:{start + k*0.07:.2f}s">{esc(g)}</text>')
-            b.append(f'<text class="in b" x="{x:.1f}" y="{y}" font-size="{fs}" style="animation-delay:{start + 0.21:.2f}s">{esc(ch)}</text>')
-        t += 0.35
-
-    rows = [
-        ("focus", "offline agentic AI systems"),
-        ("building", "AEGIS, air-gapped workbench, SIH 2026"),
-        ("interning", "codebase migration agent, REVA"),
-        ("stack", "python / langgraph / ollama / faiss"),
-        ("machine", "rtx 3050 ti, 4 GB of VRAM, arch linux"),
-    ]
-    y = 214
-    for i, (k, v) in enumerate(rows):
-        d = 2.05 + i * 0.09
-        b.append(f'<g class="in" style="animation-delay:{d:.2f}s"><text x="{RX}" y="{y}" font-size="13" class="g2">{k}</text>'
-                 f'<text x="{RX+92}" y="{y}" font-size="13">{esc(v)}</text></g>')
-        y += 24
-    d = 2.05 + len(rows) * 0.09
-    b.append(f'<g class="in" style="animation-delay:{d:.2f}s"><text x="{RX}" y="{y}" font-size="13" class="g2">status</text>'
-             f'<circle class="pl" cx="{RX+97}" cy="{y-4.5}" r="4" fill="{W}"/>'
-             f'<text x="{RX+110}" y="{y}" font-size="13">open to AI/ML internships</text></g>')
-
-    # ticker
-    ty = H - 58
-    b.append(f'<line x1="16" x2="{Wd-16}" y1="{ty}" y2="{ty}" stroke="{G3}"/>')
-    items = ["AEGIS", "codebase migration agent", "AquaSentinel", "ArchAgent", "health-risk-mlops", "Debug.ext", "SIH 2026", "B.Tech AI & ML, REVA '27"]
-    tick = "   +   ".join(items) + "   +   "
-    L = round(len(tick) * 13 * 0.6)
-    b.append(f'<clipPath id="tc"><rect x="16" y="{ty}" width="{Wd-32}" height="42"/></clipPath>')
-    b.append(f'<g clip-path="url(#tc)"><g class="tk">')
-    for k in range(3):
-        b.append(f'<text x="{16 + k*L}" y="{ty+26}" font-size="13" class="g1" textLength="{L}" lengthAdjust="spacing">{esc(tick)}</text>')
-    b.append('</g></g>')
-
-    css = f"""
-.ab{{animation:ab 1.1s cubic-bezier(.16,1,.3,1) both}}
-@keyframes ab{{from{{opacity:0;transform:translate(var(--dx),var(--dy))}}to{{opacity:1;transform:none}}}}
-.sc{{opacity:0;animation:fl .07s linear}}
-@keyframes fl{{0%,100%{{opacity:1}}}}
+    RX, KW = 400, 10 * CW
+    who = [("Role", "AI engineer intern, IIT Ropar (remote)"),
+           ("Project", "Ajrasakha, multilingual farm assistant"),
+           ("Building", "AEGIS, air-gapped AI workbench (SIH '26)"),
+           ("Agent", "Codebase migration agent, REVA CAIML"),
+           ("Degree", "B.Tech AI &amp; ML, REVA University '27"),
+           ("Stack", "Python, TypeScript, LangGraph, Ollama")]
+    rig = [("OS", "Arch Linux x86_64"), ("Host", "ASUS TUF Gaming F15 (FX506HE)"),
+           ("CPU", "Intel i7-11800H (16) @ 4.60 GHz"), ("GPU", "NVIDIA RTX 3050 Ti Mobile, 4 GB"),
+           ("Memory", "16 GB"), ("WM", "niri"), ("Shell", "fish, bash")]
+    t0, st = 1.18, 0.07
+    n = [0]
+    def line(inner):
+        b.append(f'<g class="in" style="animation-delay:{t0+n[0]*st:.3f}s">{inner}</g>'); n[0] += 1
+    y = 132
+    line(f'<text x="{RX}" y="{y}" font-size="{FS}" class="b">srinivas<tspan class="f3" style="font-weight:400">@</tspan>s10</text>')
+    y += LH; line(f'<text x="{RX}" y="{y}" font-size="{FS}" class="f3">{"-"*12}</text>')
+    def kv(y, k, v):
+        line(f'<text x="{RX}" y="{y}" font-size="{FS}" class="f3">{k}</text><text x="{RX+KW:.0f}" y="{y}" font-size="{FS}">{v}</text>')
+    for k, v in who:
+        y += LH; kv(y, k, v)
+    y += LH
+    sx = RX + KW + 5
+    line(f'<text x="{RX}" y="{y}" font-size="{FS}" class="f3">Status</text>'
+         f'<circle class="rg" cx="{sx:.0f}" cy="{y-5}" r="4.5" fill="none" stroke="{T.fg}" style="transform-origin:{sx:.0f}px {y-5}px"/>'
+         f'<circle cx="{sx:.0f}" cy="{y-5}" r="4" fill="{T.fg}"/>'
+         f'<text x="{RX+KW+18:.0f}" y="{y}" font-size="{FS}">open to 2027 AI/ML roles</text>')
+    y += LH * 0.9
+    line(f'<path d="M{RX} {y-5:.0f}H{RX+KW+396:.0f}" stroke="{T.ln}"/>')
+    y += LH * 0.3
+    for k, v in rig:
+        y += LH; kv(y, k, v)
+    y += LH + 8
+    line("".join(f'<rect x="{RX+i*30}" y="{y-12:.0f}" width="28" height="14" rx="3" fill="{rgba(T.ink, a)}"/>'
+                 for i, a in enumerate([.06, .14, .24, .36, .5, .66, .82, 1])))
+    tend = t0 + n[0] * st
+    yb = H - 36
+    b.append(f'<g class="in" style="animation-delay:{tend+0.15:.2f}s"><text x="{PX}" y="{yb}" font-size="{FS}">{prompt}</text></g>')
+    b.append(f'<g class="in" style="animation-delay:{tend+0.2:.2f}s"><rect class="bl2" x="{cx0:.1f}" y="{yb-13}" width="{CW}" height="17" rx="1.5" fill="{T.fg}"/></g>')
+    b.append(f'<text x="{Wd-44}" y="{yb}" font-size="12" class="f3" text-anchor="end">12.97&#176; N  77.59&#176; E</text>')
+    css = gcss + f"""
 .in{{animation:show 0s step-end both}}
-.scanwrap{{animation:show 0s step-end 2.6s both}}
-.scan{{opacity:.55;animation:scan 7s cubic-bezier(.45,0,.55,1) 2.6s infinite}}
-@keyframes scan{{0%{{transform:translateX(0);opacity:0}}6%{{opacity:.55}}44%{{opacity:.55}}50%{{transform:translateX({mw}px);opacity:0}}100%{{transform:translateX({mw}px);opacity:0}}}}
-.pl{{animation:pulse 1.6s ease-in-out infinite}}
-.tw{{animation:pulse 3.2s ease-in-out infinite}}
-.tk{{animation:tk 38s linear infinite}}
-@keyframes tk{{to{{transform:translateX(-{L}px)}}}}
-@media (prefers-reduced-motion:reduce){{.sc{{display:none}}}}
+.cell{{animation:lit .4s cubic-bezier(.2,.7,.2,1) both}}
+@keyframes lit{{from{{fill:{T.sqc[0]}}}}}
+.cur1{{animation:type .63s steps(9,end) .35s both, hide 0s step-end 1.02s both}}
+@keyframes type{{from{{transform:translateX(0)}}to{{transform:translateX({9*CW}px)}}}}
+@keyframes hide{{from{{opacity:1}}to{{opacity:0}}}}
+.bl2{{animation:blink 1.06s step-end infinite}}
+.rg{{animation:ring 2.2s cubic-bezier(.2,.6,.3,1) infinite}}
+@media (prefers-reduced-motion:reduce){{.cur1{{display:none}}}}
 """
-    write("hero.svg", svg(Wd, H, "Srinivas R C (S10)",
-        "S10 assembled from white dots. Srinivas R C, AI/ML engineer in Bengaluru. I build AI that runs where the cloud can't. "
-        "Focus: offline agentic AI systems. Building AEGIS, an air-gapped workbench for SIH 2026. Interning on a codebase migration agent at REVA. "
-        "Stack: Python, LangGraph, Ollama, FAISS. Status: open to AI/ML internships.", css, "".join(b)))
+    alt = ("Terminal running fastfetch. S10 drawn in contribution squares. Srinivas R C, AI engineer intern at IIT Ropar (remote) "
+           "working on Ajrasakha. Building AEGIS for SIH 2026 and a codebase migration agent at REVA CAIML. "
+           "B.Tech AI and ML, REVA University 2027. Open to 2027 AI/ML roles. Arch Linux, niri, fish and bash.")
+    write("hero.svg", svg(Wd, H, "srinivas@s10 fastfetch", alt, css, "".join(b)))
+    return alt
 
-# ------------------------------------------------------------------ SECTION HEADERS
+# =================================================================== HEADERS (no box)
 def header(slug, note):
-    Wd, H = 960, 64
-    b = [f'<rect width="{Wd}" height="{H}" fill="{BK}"/>']
-    b.append(f'<text x="24" y="41" font-size="22" class="b">~/{slug}</text>')
-    cx = 24 + (2 + len(slug)) * 13.2 + 6
-    b.append(f'<rect class="cu" x="{cx:.1f}" y="24" width="11" height="20" fill="{W}"/>')
-    b.append(f'<line x1="{cx+28:.1f}" x2="{Wd-24-len(note)*7.8-20:.1f}" y1="34" y2="34" stroke="{G3}"/>')
-    b.append(f'<text x="{Wd-24}" y="39" font-size="13" class="g2" text-anchor="end">{esc(note)}</text>')
-    css = ".cu{animation:blink 1.06s step-end infinite}"
-    write(f"h-{slug}.svg", svg(Wd, H, f"~/{slug}", note, css, "".join(b)))
+    Wd, H = 960, 60
+    tw = (2 + len(slug)) * 13.2
+    b = [f'<rect width="{Wd}" height="{H}" rx="10" fill="#0D1117"/>', f'<text x="16" y="38" font-size="22" class="b">~/{slug}</text>',
+         f'<rect class="cu" x="{16+tw+6:.1f}" y="21" width="11" height="20" rx="1.5" fill="{T.fg}"/>',
+         f'<path d="M{16+tw+32:.1f} 31H{Wd-16-len(note)*7.8-18:.1f}" stroke="{T.ln}"/>',
+         f'<text x="{Wd-16}" y="36" font-size="13" class="f3" text-anchor="end">{esc(note)}</text>']
+    write(f"h-{slug}.svg", svg(Wd, H, f"~/{slug}", note, ".cu{animation:blink 1.06s step-end infinite}", "".join(b)))
 
-# ------------------------------------------------------------------ PROJECT CARDS
-CW_, CH_ = 470, 262
-
+# =================================================================== CARDS
 def chips(tags, x, y):
     out, cx = [], x
     for t in tags:
-        w = len(t) * 6.3 + 16
-        out.append(f'<rect x="{cx:.1f}" y="{y}" width="{w:.1f}" height="22" rx="11" fill="none" stroke="{G2}"/>'
-                   f'<text x="{cx + w/2:.1f}" y="{y+15}" font-size="10.5" class="g1" text-anchor="middle">{esc(t)}</text>')
+        w = len(t) * 6.3 + 18
+        out.append(f'<rect x="{cx:.1f}" y="{y}" width="{w:.1f}" height="22" rx="11" fill="{rgba(T.ink, .04)}" stroke="{T.ln}"/>'
+                   f'<text x="{cx + w/2:.1f}" y="{y+15}" font-size="10.5" class="f2" text-anchor="middle">{esc(t)}</text>')
         cx += w + 6
-    assert cx - x < 640, (tags, cx - x)
     return "".join(out)
 
-def card(fname, status, live, title, desc, tags, art, art_css, alt):
-    b = [f'<rect width="{CW_}" height="{CH_}" fill="{BK}"/>',
-         f'<rect x=".5" y=".5" width="{CW_-1}" height="{CH_-1}" fill="none" stroke="{G3}"/>',
-         crop_marks(8, 8, CW_ - 16, CH_ - 16, 10, G1)]
+def status(label, live):
     if live:
-        b.append(f'<circle class="rg" cx="30" cy="38" r="4" fill="none" stroke="{W}" style="transform-origin:30px 38px"/><circle cx="30" cy="38" r="3.6" fill="{W}"/>')
-    else:
-        b.append(f'<circle cx="30" cy="38" r="3.5" fill="none" stroke="{G1}"/>')
-    b.append(f'<text x="42" y="42" font-size="12" class="g1">{esc(status)}</text>')
-    b.append(f'<text x="24" y="84" font-size="22" class="b">{esc(title)}</text>')
-    for i, line in enumerate(desc):
-        assert len(line) <= 34, line
-        b.append(f'<text x="24" y="{114 + i*20}" font-size="12.5" class="g1">{esc(line)}</text>')
-    b.append(chips(tags, 24, CH_ - 50))
-    b.append(art)
-    write(fname, svg(CW_, CH_, title, alt, ".rg{animation:ring 2.2s cubic-bezier(.2,.6,.3,1) infinite}@keyframes ring{0%{transform:scale(.6);opacity:.7}100%{transform:scale(2.4);opacity:0}}" + art_css, "".join(b)))
+        return (f'<circle class="rg" cx="30" cy="36" r="4" fill="none" stroke="{T.fg}" style="transform-origin:30px 36px"/>'
+                f'<circle cx="30" cy="36" r="3.6" fill="{T.fg}"/><text x="42" y="40" font-size="12" class="f2">{esc(label)}</text>')
+    return f'<circle cx="30" cy="36" r="3.4" fill="none" stroke="{T.fg2}"/><text x="42" y="40" font-size="12" class="f2">{esc(label)}</text>'
 
-AX, AY = CW_ - 24 - 78, 118   # art centre
+def card(fname, stat, live, title, desc, tags, artfn, alt, Wd=470, H=262, maxc=34):
+    g, gcss = glass(Wd, H, 16, orbs=[(Wd - 90, 60, 110)])
+    b = [g, status(stat, live), f'<text x="24" y="82" font-size="22" class="b">{esc(title)}</text>']
+    for i, line in enumerate(desc):
+        assert len(line) <= maxc, line
+        b.append(f'<text x="24" y="{112 + i*20}" font-size="12.5" class="f2">{esc(line)}</text>')
+    b.append(chips(tags, 24, H - 48))
+    art, acss = artfn()
+    b.append(art)
+    write(fname, svg(Wd, H, title, alt, gcss + ".rg{animation:ring 2.2s cubic-bezier(.2,.6,.3,1) infinite}" + acss, "".join(b)))
+
+AX, AY = 470 - 24 - 78, 116
 
 def art_aegis():
     cx, cy = AX, AY
-    p = [f'<rect class="mar" x="{cx-66}" y="{cy-66}" width="132" height="132" fill="none" stroke="{G2}" stroke-dasharray="4 4"/>',
-         f'<circle cx="{cx}" cy="{cy}" r="40" fill="none" stroke="{G3}"/>']
+    p = [f'<rect class="mar" x="{cx-66}" y="{cy-66}" width="132" height="132" rx="10" fill="none" stroke="{T.d1}" stroke-dasharray="4 4"/>',
+         f'<circle cx="{cx}" cy="{cy}" r="40" fill="none" stroke="{T.d2}"/>']
     for i in range(5):
         a = math.radians(-90 + i * 72)
         x, y = cx + 40 * math.cos(a), cy + 40 * math.sin(a)
-        p.append(f'<circle class="nd" cx="{x:.1f}" cy="{y:.1f}" r="5.5" fill="{BK}" stroke="{W}" stroke-width="1.5" style="animation-delay:{i:.0f}s"/>')
-    p.append(f'<g class="orb" style="transform-origin:{cx}px {cy}px"><circle cx="{cx}" cy="{cy-40}" r="3" fill="{W}"/></g>')
-    p.append(f'<text x="{cx}" y="{cy+4}" font-size="10" class="g2" text-anchor="middle">7B</text>')
-    # packets from the outside world, stopped at the air gap
+        p.append(f'<circle class="nd" cx="{x:.1f}" cy="{y:.1f}" r="5.5" fill="{T.solid}" stroke="{T.fg}" stroke-width="1.5" style="animation-delay:{i}s"/>')
+    p.append(f'<g class="orb" style="transform-origin:{cx}px {cy}px"><circle cx="{cx}" cy="{cy-40}" r="3" fill="{T.fg}"/></g>')
+    p.append(f'<text x="{cx}" y="{cy+4}" font-size="10" class="f3" text-anchor="middle">7B</text>')
     for i, (sx, sy, ex) in enumerate([(cx+110, cy-30, cx+70), (cx+110, cy+22, cx+70), (cx-110, cy+40, cx-70)]):
-        dx = ex - sx
-        p.append(f'<circle class="pk" cx="{sx}" cy="{sy}" r="2.5" fill="{G1}" style="--dx:{dx}px;animation-delay:{i*0.9:.1f}s"/>')
+        p.append(f'<circle class="pk" cx="{sx}" cy="{sy}" r="2.5" fill="{T.fg2}" style="--dx:{ex-sx}px;animation-delay:{i*0.9:.1f}s"/>')
     css = f"""
-.mar{{animation:march 1.2s linear infinite}}
-.orb{{animation:spin 5s linear infinite}}
-.nd{{animation:nd 5s linear infinite}}
-@keyframes nd{{0%,6%{{fill:{W}}}12%,100%{{fill:{BK}}}}}
+.mar{{animation:march 1.2s linear infinite}}.orb{{animation:spin 5s linear infinite}}
+.nd{{animation:nd 5s linear infinite}}@keyframes nd{{0%,6%{{fill:{T.fg}}}12%,100%{{fill:{T.solid}}}}}
 .pk{{animation:pk 2.7s ease-in infinite}}
-@keyframes pk{{0%{{transform:translateX(0);opacity:0}}15%{{opacity:1}}70%{{transform:translateX(var(--dx));opacity:1}}85%,100%{{transform:translateX(var(--dx));opacity:0}}}}
-"""
+@keyframes pk{{0%{{transform:translateX(0);opacity:0}}15%{{opacity:1}}70%{{transform:translateX(var(--dx));opacity:1}}85%,100%{{transform:translateX(var(--dx));opacity:0}}}}"""
     return "".join(p), css
 
 def art_migrate():
     cx, cy = AX, AY
-    p = [f'<text x="{cx-52}" y="{cy-58}" font-size="11" class="g2" text-anchor="middle">v1</text>',
-         f'<text x="{cx+42}" y="{cy-58}" font-size="11" class="g2" text-anchor="middle">v2</text>',
-         f'<path d="M{cx-9} {cy-6}l7 6-7 6" fill="none" stroke="{G1}" stroke-width="1.5"/>']
-    widths = [44, 30, 52, 24, 40, 34]
-    css = []
-    period = 6.0
-    for i, w in enumerate(widths):
+    p = [f'<text x="{cx-52}" y="{cy-58}" font-size="11" class="f3" text-anchor="middle">v1</text>',
+         f'<text x="{cx+42}" y="{cy-58}" font-size="11" class="f3" text-anchor="middle">v2</text>',
+         f'<path d="M{cx-9} {cy-6}l7 6-7 6" fill="none" stroke="{T.fg2}" stroke-width="1.5" stroke-linecap="round"/>']
+    css, period = [], 6.0
+    for i, w in enumerate([44, 30, 52, 24, 40, 34]):
         y = cy - 46 + i * 16
-        p.append(f'<rect x="{cx-74}" y="{y}" width="{w}" height="6" rx="3" fill="{G2}"/>')
+        p.append(f'<rect x="{cx-74}" y="{y}" width="{w}" height="6" rx="3" fill="{T.d1}"/>')
         s = (0.10 + i * 0.1) * 100
-        e = s + 4
-        css.append(f'@keyframes m{i}{{0%,{s:.0f}%{{fill:{G3}}}{e:.0f}%,88%{{fill:{W}}}96%,100%{{fill:{G3}}}}}'
-                   f'.m{i}{{animation:m{i} {period}s linear infinite}}')
-        p.append(f'<rect class="m{i}" x="{cx+20}" y="{y}" width="{w}" height="6" rx="3" fill="{G3}"/>')
-    # scanner sweeping v1 while rewriting v2
-    p.append(f'<rect class="scn" x="{cx-80}" y="{cy-50}" width="62" height="1.5" fill="{W}"/>')
-    p.append(f'<g class="ok"><circle cx="{cx+40}" cy="{cy+62}" r="9" fill="none" stroke="{W}" stroke-width="1.5"/>'
-             f'<path d="M{cx+35} {cy+62}l3.5 3.5 6-7" fill="none" stroke="{W}" stroke-width="1.5"/></g>')
-    p.append(f'<text x="{cx-42}" y="{cy+66}" font-size="10" class="g2" text-anchor="middle">tests</text>')
-    css.append(f"""
-.scn{{animation:scn {period}s linear infinite}}
+        css.append(f'@keyframes m{i}{{0%,{s:.0f}%{{fill:{T.d2}}}{s+4:.0f}%,88%{{fill:{T.fg}}}96%,100%{{fill:{T.d2}}}}}.m{i}{{animation:m{i} {period}s linear infinite}}')
+        p.append(f'<rect class="m{i}" x="{cx+20}" y="{y}" width="{w}" height="6" rx="3" fill="{T.d2}"/>')
+    p.append(f'<rect class="scn" x="{cx-80}" y="{cy-50}" width="62" height="1.5" rx=".75" fill="{T.fg}"/>')
+    p.append(f'<g class="ok"><circle cx="{cx+40}" cy="{cy+62}" r="9" fill="none" stroke="{T.fg}" stroke-width="1.5"/>'
+             f'<path d="M{cx+35} {cy+62}l3.5 3.5 6-7" fill="none" stroke="{T.fg}" stroke-width="1.5" stroke-linecap="round"/></g>')
+    p.append(f'<text x="{cx-42}" y="{cy+66}" font-size="10" class="f3" text-anchor="middle">tests</text>')
+    css.append(f""".scn{{animation:scn {period}s linear infinite}}
 @keyframes scn{{0%,8%{{transform:translateY(0);opacity:0}}10%{{opacity:1}}70%{{transform:translateY(96px);opacity:1}}72%,100%{{transform:translateY(96px);opacity:0}}}}
-.ok{{animation:ok {period}s linear infinite}}
-@keyframes ok{{0%,74%{{opacity:0}}76%,90%{{opacity:1}}96%,100%{{opacity:0}}}}
-""")
+.ok{{animation:ok {period}s linear infinite}}@keyframes ok{{0%,74%{{opacity:0}}76%,90%{{opacity:1}}96%,100%{{opacity:0}}}}""")
     return "".join(p), "".join(css)
 
 def art_sonar():
     cx, cy = AX, AY
-    p = []
-    for r in (22, 44, 66):
-        p.append(f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="{G3}"/>')
-    p.append(f'<path d="M{cx-72} {cy}H{cx+72}M{cx} {cy-72}V{cy+72}" stroke="{G3}"/>')
+    p = [f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="none" stroke="{T.d2}"/>' for r in (22, 44, 66)]
+    p.append(f'<path d="M{cx-72} {cy}H{cx+72}M{cx} {cy-72}V{cy+72}" stroke="{T.d2}"/>')
     wedge = []
     for k, op in enumerate([.30, .18, .10, .05]):
-        a0 = math.radians(-90 - k * 10); a1 = math.radians(-90 - (k + 1) * 10)
-        x0, y0 = cx + 66 * math.cos(a0), cy + 66 * math.sin(a0)
-        x1, y1 = cx + 66 * math.cos(a1), cy + 66 * math.sin(a1)
-        wedge.append(f'<path d="M{cx} {cy}L{x0:.1f} {y0:.1f}A66 66 0 0 0 {x1:.1f} {y1:.1f}Z" fill="{W}" fill-opacity="{op}"/>')
-    p.append(f'<g class="sw" style="transform-origin:{cx}px {cy}px">{"".join(wedge)}<line x1="{cx}" y1="{cy}" x2="{cx}" y2="{cy-66}" stroke="{W}" stroke-width="1.5"/></g>')
-    css = [".sw{animation:spin 4s linear infinite}"]
-    for i, (ang, rad) in enumerate([(40, 50), (130, 30), (250, 58), (320, 36)]):
+        a0, a1 = math.radians(-90 - k*10), math.radians(-90 - (k+1)*10)
+        wedge.append(f'<path d="M{cx} {cy}L{cx+66*math.cos(a0):.1f} {cy+66*math.sin(a0):.1f}A66 66 0 0 0 {cx+66*math.cos(a1):.1f} {cy+66*math.sin(a1):.1f}Z" fill="{T.ink}" fill-opacity="{op}"/>')
+    p.append(f'<g class="sw" style="transform-origin:{cx}px {cy}px">{"".join(wedge)}<line x1="{cx}" y1="{cy}" x2="{cx}" y2="{cy-66}" stroke="{T.fg}" stroke-width="1.5"/></g>')
+    for ang, rad in [(40, 50), (130, 30), (250, 58), (320, 36)]:
         a = math.radians(ang - 90)
-        x, y = cx + rad * math.cos(a), cy + rad * math.sin(a)
-        p.append(f'<circle class="bl" cx="{x:.1f}" cy="{y:.1f}" r="3.2" fill="{W}" style="animation-delay:{ang/360*4:.2f}s"/>')
-    css.append("@keyframes bl{0%{opacity:1}70%,100%{opacity:0}}.bl{opacity:0;animation:bl 4s linear infinite}")
-    p.append(f'<circle cx="{cx}" cy="{cy}" r="2.5" fill="{W}"/>')
-    return "".join(p), "".join(css)
+        p.append(f'<circle class="bp" cx="{cx+rad*math.cos(a):.1f}" cy="{cy+rad*math.sin(a):.1f}" r="3.2" fill="{T.fg}" style="animation-delay:{ang/360*4:.2f}s"/>')
+    p.append(f'<circle cx="{cx}" cy="{cy}" r="2.5" fill="{T.fg}"/>')
+    return "".join(p), ".sw{animation:spin 4s linear infinite}@keyframes bp{0%{opacity:1}70%,100%{opacity:0}}.bp{opacity:0;animation:bp 4s linear infinite}"
 
 def art_arch():
     cx, cy = AX, AY + 18
-    a = (30, 17); bb = (-30, 17); up = (0, -40)
-    def P(i, j, k):  # i along a, j along b, k along up
-        return (cx + i*a[0] + j*bb[0] + k*up[0], cy - 34 + i*a[1] + j*bb[1] + k*up[1] + 40)
-    def pt(q): return f"{q[0]:.1f} {q[1]:.1f}"
+    a, bb, up = (30, 17), (-30, 17), (0, -40)
+    P = lambda i, j, k: (cx + i*a[0] + j*bb[0] + k*up[0], cy + 6 + i*a[1] + j*bb[1] + k*up[1])
+    pt = lambda q: f"{q[0]:.1f} {q[1]:.1f}"
     base = [P(0,0,0), P(1.6,0,0), P(1.6,1.4,0), P(0,1.4,0)]
     top = [P(0,0,1), P(1.6,0,1), P(1.6,1.4,1), P(0,1.4,1)]
-    r1 = (P(0,0.7,1)[0], P(0,0.7,1)[1] - 30); r2 = (P(1.6,0.7,1)[0], P(1.6,0.7,1)[1] - 30)
-    paths = [
-        "M" + "L".join(pt(q) for q in base) + "Z",
-        "".join(f"M{pt(base[i])}L{pt(top[i])}" for i in range(4)),
-        "M" + "L".join(pt(q) for q in top) + "Z",
-        f"M{pt(r1)}L{pt(r2)}M{pt(top[0])}L{pt(r1)}L{pt(top[3])}M{pt(top[1])}L{pt(r2)}L{pt(top[2])}",
-        f"M{pt(P(0.5,1.4,0))}L{pt(P(0.5,1.4,0.55))}L{pt(P(0.9,1.4,0.55))}L{pt(P(0.9,1.4,0))}",
-    ]
-    p = []
-    for i, d in enumerate(paths):
-        p.append(f'<path class="dr" d="{d}" pathLength="1" fill="none" stroke="{W}" stroke-width="1.4" stroke-linejoin="round" style="animation-delay:{i*0.35:.2f}s"/>')
-    # dimension line + cost tag
+    r1 = (P(0,.7,1)[0], P(0,.7,1)[1]-30); r2 = (P(1.6,.7,1)[0], P(1.6,.7,1)[1]-30)
+    paths = ["M" + "L".join(map(pt, base)) + "Z", "".join(f"M{pt(base[i])}L{pt(top[i])}" for i in range(4)),
+             "M" + "L".join(map(pt, top)) + "Z",
+             f"M{pt(r1)}L{pt(r2)}M{pt(top[0])}L{pt(r1)}L{pt(top[3])}M{pt(top[1])}L{pt(r2)}L{pt(top[2])}",
+             f"M{pt(P(.5,1.4,0))}L{pt(P(.5,1.4,.55))}L{pt(P(.9,1.4,.55))}L{pt(P(.9,1.4,0))}"]
+    p = [f'<path class="dr" d="{d}" pathLength="1" fill="none" stroke="{T.fg}" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" style="animation-delay:{i*.35:.2f}s"/>' for i, d in enumerate(paths)]
     y = cy + 62
-    p.append(f'<g class="tag"><path d="M{cx-48} {y}H{cx+48}M{cx-48} {y-4}v8M{cx+48} {y-4}v8" stroke="{G1}"/>'
-             f'<text x="{cx}" y="{y+16}" font-size="10.5" class="g1" text-anchor="middle">&#8377; itemised</text></g>')
-    css = """
-.dr{stroke-dasharray:1;stroke-dashoffset:1;animation:dr 7s cubic-bezier(.6,0,.3,1) infinite}
+    p.append(f'<g class="tag"><path d="M{cx-48} {y}H{cx+48}M{cx-48} {y-4}v8M{cx+48} {y-4}v8" stroke="{T.fg2}"/>'
+             f'<text x="{cx}" y="{y+16}" font-size="10.5" class="f2" text-anchor="middle">&#8377; itemised</text></g>')
+    return "".join(p), """.dr{stroke-dasharray:1;stroke-dashoffset:1;animation:dr 7s cubic-bezier(.6,0,.3,1) infinite}
 @keyframes dr{0%{stroke-dashoffset:1;opacity:1}25%,78%{stroke-dashoffset:0;opacity:1}90%,100%{stroke-dashoffset:0;opacity:0}}
-.tag{animation:tg 7s linear infinite}
-@keyframes tg{0%,40%{opacity:0}46%,78%{opacity:1}88%,100%{opacity:0}}
-"""
-    return "".join(p), css
+.tag{animation:tg 7s linear infinite}@keyframes tg{0%,40%{opacity:0}46%,78%{opacity:1}88%,100%{opacity:0}}"""
 
 def art_mlops():
     cx, cy = AX - 20, AY
-    stages = ["data", "train", "track", "serve"]
-    p = [f'<line x1="{cx}" y1="{cy-60}" x2="{cx}" y2="{cy+60}" stroke="{G3}" stroke-width="1.5"/>']
-    for i, s in enumerate(stages):
+    p = [f'<line x1="{cx}" y1="{cy-60}" x2="{cx}" y2="{cy+60}" stroke="{T.d2}" stroke-width="1.5"/>']
+    for i, s in enumerate(["data", "train", "track", "serve"]):
         y = cy - 60 + i * 40
-        p.append(f'<rect class="st" x="{cx-9}" y="{y-9}" width="18" height="18" fill="{BK}" stroke="{W}" stroke-width="1.5" style="animation-delay:{i*0.75:.2f}s"/>')
-        p.append(f'<text x="{cx+22}" y="{y+4}" font-size="11" class="g1">{s}</text>')
+        p.append(f'<rect class="st" x="{cx-9}" y="{y-9}" width="18" height="18" rx="4" fill="{T.solid}" stroke="{T.fg}" stroke-width="1.5" style="animation-delay:{i*.75:.2f}s"/>')
+        p.append(f'<text x="{cx+22}" y="{y+4}" font-size="11" class="f2">{s}</text>')
     for i in range(2):
-        p.append(f'<circle class="fw" cx="{cx}" cy="{cy-60}" r="3" fill="{W}" style="animation-delay:{i*1.5:.1f}s"/>')
-    css = """
-.fw{animation:fw 3s linear infinite}
-@keyframes fw{0%{transform:translateY(0);opacity:0}8%{opacity:1}92%{opacity:1}100%{transform:translateY(120px);opacity:0}}
-.st{animation:stp 3s linear infinite}
-@keyframes stp{0%,10%{fill:#FFFFFF}22%,100%{fill:#000000}}
-"""
-    return "".join(p), css
+        p.append(f'<circle class="fw" cx="{cx}" cy="{cy-60}" r="3" fill="{T.fg}" style="animation-delay:{i*1.5:.1f}s"/>')
+    return "".join(p), f""".fw{{animation:fw 3s linear infinite}}
+@keyframes fw{{0%{{transform:translateY(0);opacity:0}}8%{{opacity:1}}92%{{opacity:1}}100%{{transform:translateY(120px);opacity:0}}}}
+.st{{animation:stp 3s linear infinite}}@keyframes stp{{0%,10%{{fill:{T.fg}}}22%,100%{{fill:{T.solid}}}}}"""
 
 def art_debug():
     cx, cy = AX, AY
     x0 = cx - 70
-    widths = [96, 70, 118, 88, 60, 104, 76]
     p = []
-    for i, w in enumerate(widths):
-        y = cy - 54 + i * 16
-        cls = "er" if i == 3 else ""
-        p.append(f'<rect class="{cls}" x="{x0}" y="{y}" width="{w}" height="6" rx="3" fill="{G2 if i != 3 else G2}"/>')
-    y3 = cy - 54 + 3 * 16
-    p.append(f'<g class="pz"><rect x="{x0+96}" y="{y3-5}" width="30" height="16" rx="3" fill="{W}"/>'
-             f'<text x="{x0+111}" y="{y3+7}" font-size="10.5" text-anchor="middle" style="fill:{BK}" class="b">P0</text></g>')
-    p.append(f'<g class="fx"><path d="M{x0+100} {y3+3}l4 4 7-8" fill="none" stroke="{W}" stroke-width="1.8"/>'
-             f'<text x="{x0+116}" y="{y3+7}" font-size="10.5" class="g1">fixed</text></g>')
-    p.append(f'<rect class="cu" x="{x0}" y="{cy+62}" width="8" height="12" fill="{W}"/>')
-    css = """
-.er{animation:er 4s linear infinite}
-@keyframes er{0%,15%{fill:#5C5C5C}18%,55%{fill:#FFFFFF}62%,100%{fill:#5C5C5C}}
-.pz{animation:pz 4s linear infinite}
-@keyframes pz{0%,18%{opacity:0}20%,55%{opacity:1}58%,100%{opacity:0}}
-.fx{animation:fx 4s linear infinite}
-@keyframes fx{0%,60%{opacity:0}63%,92%{opacity:1}97%,100%{opacity:0}}
-.cu{animation:blink 1.06s step-end infinite}
-"""
-    return "".join(p), css
+    for i, w in enumerate([96, 70, 118, 88, 60, 104, 76]):
+        p.append(f'<rect{" class=er" if i == 3 else ""} x="{x0}" y="{cy-54+i*16}" width="{w}" height="6" rx="3" fill="{T.d1}"/>'.replace("class=er", 'class="er"'))
+    y3 = cy - 54 + 48
+    p.append(f'<g class="pz"><rect x="{x0+96}" y="{y3-5}" width="30" height="16" rx="4" fill="{T.fg}"/>'
+             f'<text x="{x0+111}" y="{y3+7}" font-size="10.5" text-anchor="middle" style="fill:{T.inv}" class="b">P0</text></g>')
+    p.append(f'<g class="fx"><path d="M{x0+100} {y3+3}l4 4 7-8" fill="none" stroke="{T.fg}" stroke-width="1.8" stroke-linecap="round"/>'
+             f'<text x="{x0+116}" y="{y3+7}" font-size="10.5" class="f2">fixed</text></g>')
+    p.append(f'<rect class="cu" x="{x0}" y="{cy+62}" width="8" height="12" rx="1" fill="{T.fg}"/>')
+    return "".join(p), f""".er{{animation:er 4s linear infinite}}@keyframes er{{0%,15%{{fill:{T.d1}}}18%,55%{{fill:{T.fg}}}62%,100%{{fill:{T.d1}}}}}
+.pz{{animation:pz 4s linear infinite}}@keyframes pz{{0%,18%{{opacity:0}}20%,55%{{opacity:1}}58%,100%{{opacity:0}}}}
+.fx{{animation:fx 4s linear infinite}}@keyframes fx{{0%,60%{{opacity:0}}63%,92%{{opacity:1}}97%,100%{{opacity:0}}}}
+.cu{{animation:blink 1.06s step-end infinite}}"""
 
-# ------------------------------------------------------------------ STACK
+def art_ajrasakha():
+    x0, bw, bh = 680, 250, 28
+    tiers = [(66, "golden dataset", "verified"), (116, "package of practices", "verified"), (166, "general LLM", "fallback")]
+    p = [f'<line x1="{x0+bw/2}" y1="30" x2="{x0+bw/2}" y2="{tiers[-1][0]}" stroke="{T.d1}" stroke-dasharray="2 4"/>']
+    for i, (ty, label, k) in enumerate(tiers):
+        dash = ' stroke-dasharray="4 3"' if i == 2 else ""
+        p.append(f'<rect class="t{i}" x="{x0}" y="{ty}" width="{bw}" height="{bh}" rx="8" fill="{rgba(T.ink,.04)}" stroke="{T.fg}" stroke-opacity=".7" stroke-width="1.2"{dash}/>')
+        p.append(f'<text class="l{i}" x="{x0+14}" y="{ty+18.5}" font-size="12">{label}</text>')
+        p.append(f'<text class="l{i} k" x="{x0+bw-14}" y="{ty+18.5}" font-size="12" text-anchor="end">{k}</text>')
+    p.append(f'<circle class="q" cx="{x0+bw/2}" cy="34" r="5" fill="{T.fg}"/>')
+    p.append(f'<text x="{x0+bw/2}" y="{tiers[-1][0]+bh+26}" font-size="11" class="f3" text-anchor="middle">verified knowledge first, LLM last</text>')
+    s1, s2, s3 = [ty - 41 for ty, *_ in tiers]
+    off, on = rgba(T.ink, .04), T.fg
+    return "".join(p), f"""
+.q{{animation:q 9s cubic-bezier(.5,0,.5,1) infinite}}
+@keyframes q{{0%{{transform:translateY(0);opacity:0}}3%{{transform:translateY(0);opacity:1}}10%,28%{{transform:translateY({s1}px);opacity:1}}31%{{transform:translateY({s1}px);opacity:0}}
+33.3%{{transform:translateY(0);opacity:0}}36%{{transform:translateY(0);opacity:1}}43%{{transform:translateY({s1}px)}}50%,61%{{transform:translateY({s2}px);opacity:1}}64%{{transform:translateY({s2}px);opacity:0}}
+66.6%{{transform:translateY(0);opacity:0}}69%{{transform:translateY(0);opacity:1}}76%{{transform:translateY({s1}px)}}83%{{transform:translateY({s2}px)}}90%,97%{{transform:translateY({s3}px);opacity:1}}100%{{transform:translateY({s3}px);opacity:0}}}}
+.t0{{animation:t0 9s linear infinite}}@keyframes t0{{0%,10%{{fill:{off}}}11%,28%{{fill:{on}}}30%,100%{{fill:{off}}}}}
+.t1{{animation:t1 9s linear infinite}}@keyframes t1{{0%,50%{{fill:{off}}}51%,61%{{fill:{on}}}63%,100%{{fill:{off}}}}}
+.t2{{animation:t2 9s linear infinite}}@keyframes t2{{0%,90%{{fill:{off}}}91%,97%{{fill:{on}}}99%,100%{{fill:{off}}}}}
+.l0{{animation:x0 9s linear infinite}}@keyframes x0{{0%,10%{{fill:{T.fg}}}11%,28%{{fill:{T.inv}}}30%,100%{{fill:{T.fg}}}}}
+.l1{{animation:x1 9s linear infinite}}@keyframes x1{{0%,50%{{fill:{T.fg}}}51%,61%{{fill:{T.inv}}}63%,100%{{fill:{T.fg}}}}}
+.l2{{animation:x2 9s linear infinite}}@keyframes x2{{0%,90%{{fill:{T.fg}}}91%,97%{{fill:{T.inv}}}99%,100%{{fill:{T.fg}}}}}
+.k{{opacity:.6}}"""
+
+# =================================================================== STACK
+STACK = [("llm systems", ["LangGraph", "Ollama", "FAISS", "ChromaDB", "sentence-transformers", "Gemini API"]),
+         ("ml + mlops", ["Python", "NumPy", "MLflow", "Docker", "GitHub Actions"]),
+         ("backend", ["FastAPI", "Express", "PostgreSQL", "MongoDB", "SQLite"]),
+         ("frontend", ["TypeScript", "React", "Next.js", "Vite", "Streamlit"]),
+         ("systems", ["Arch Linux", "Bash", "fish", "Git", "C++"])]
 def stack():
     Wd = 960
-    rows = [
-        ("llm systems", ["LangGraph", "Ollama", "FAISS", "ChromaDB", "sentence-transformers", "Gemini API"]),
-        ("ml + mlops", ["Python", "NumPy", "MLflow", "Docker", "GitHub Actions"]),
-        ("backend", ["FastAPI", "Express", "PostgreSQL", "MongoDB", "SQLite"]),
-        ("frontend", ["TypeScript", "React", "Next.js", "Vite", "Streamlit"]),
-        ("systems", ["Arch Linux", "Bash", "fish", "Git", "C++"]),
-    ]
-    H = 40 + len(rows) * 44 + 12
-    b = [f'<rect width="{Wd}" height="{H}" fill="{BK}"/>', crop_marks(8, 8, Wd - 16, H - 16, 10, G1)]
-    period = len(rows) * 2.4
-    css = [f".hl{{fill:{G2}}}.mk{{opacity:0}}", f".hl{{animation:hl {period}s linear infinite}}",
-           f"@keyframes hl{{0%{{fill:{G2}}}3%,17%{{fill:{W}}}20%,100%{{fill:{G2}}}}}",
-           f".mk{{animation:mk {period}s linear infinite}}",
-           f"@keyframes mk{{0%{{opacity:0}}3%,17%{{opacity:1}}20%,100%{{opacity:0}}}}"]
-    for i, (label, items) in enumerate(rows):
-        y = 50 + i * 44
+    H = 34 + len(STACK) * 44 + 8
+    g, gcss = glass(Wd, H, 16, orbs=[(140, 30, 110)])
+    b = [g]
+    period = len(STACK) * 2.4
+    css = [gcss, f".hl{{fill:{T.fg3}}}.mk{{opacity:0}}.hl{{animation:hl {period}s linear infinite}}",
+           f"@keyframes hl{{0%{{fill:{T.fg3}}}3%,17%{{fill:{T.fg}}}20%,100%{{fill:{T.fg3}}}}}",
+           f".mk{{animation:mk {period}s linear infinite}}@keyframes mk{{0%{{opacity:0}}3%,17%{{opacity:1}}20%,100%{{opacity:0}}}}"]
+    for i, (label, items) in enumerate(STACK):
+        y = 44 + i * 44
         d = i * 2.4
         b.append(f'<text class="mk" x="28" y="{y}" font-size="14" style="animation-delay:{d}s">&gt;</text>')
         b.append(f'<text class="hl" x="46" y="{y}" font-size="14" style="animation-delay:{d}s">{label}</text>')
-        x = 250
         parts = []
         for j, it in enumerate(items):
-            if j:
-                parts.append(f'<tspan class="g2">  /  </tspan>')
+            if j: parts.append('<tspan class="f3">  /  </tspan>')
             parts.append(f'<tspan>{esc(it)}</tspan>')
-        b.append(f'<text x="{x}" y="{y}" font-size="14">{"".join(parts)}</text>')
-        if i < len(rows) - 1:
-            b.append(f'<line x1="28" x2="{Wd-28}" y1="{y+18}" y2="{y+18}" stroke="{G4}"/>')
-    alt = "; ".join(f"{l}: {', '.join(it)}" for l, it in rows)
+        b.append(f'<text x="250" y="{y}" font-size="14">{"".join(parts)}</text>')
+        if i < len(STACK) - 1:
+            b.append(f'<path d="M28 {y+18}H{Wd-28}" stroke="{rgba(T.ink, .06)}"/>')
+    alt = "; ".join(f"{l}: {', '.join(it)}" for l, it in STACK)
     write("stack.svg", svg(Wd, H, "Stack", alt, "".join(css), "".join(b)))
+    return alt
 
-# ------------------------------------------------------------------ CONTACT BUTTONS
-def button(fname, label, value, icon, delay):
-    Wd, H = 232, 64
-    b = [f'<rect width="{Wd}" height="{H}" fill="{BK}"/>',
-         f'<rect x=".5" y=".5" width="{Wd-1}" height="{H-1}" fill="none" stroke="{G2}"/>',
-         f'<g transform="translate(18 22)" fill="none" stroke="{W}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">{icon}</g>',
-         f'<text x="54" y="27" font-size="11" class="g2">{label}</text>',
-         f'<text x="54" y="45" font-size="{12 if len(value) <= 20 else 11}">{esc(value)}</text>',
-         f'<clipPath id="c"><rect width="{Wd}" height="{H}"/></clipPath>',
-         f'<g clip-path="url(#c)"><rect class="gl" x="-60" y="-10" width="26" height="{H+20}" fill="{W}" fill-opacity=".14" transform="skewX(-20)" style="animation-delay:{delay}s"/></g>']
-    css = ".gl{animation:gl 7s ease-in-out infinite}@keyframes gl{0%{transform:skewX(-20deg) translateX(0)}18%,100%{transform:skewX(-20deg) translateX(340px)}}"
-    write(fname, svg(Wd, H, f"{label}: {value}", f"{label}: {value}", css, "".join(b)))
-
+# =================================================================== CONTACT
 ICONS = {
     "globe": '<circle cx="10" cy="10" r="9"/><ellipse cx="10" cy="10" rx="4" ry="9"/><path d="M1 10h18"/>',
-    "in": '<rect x="1" y="1" width="18" height="18" rx="3"/><path d="M6 9v6M6 5.5v.1M10 15v-6M10 11.5c0-1.5 1-2.5 2.3-2.5S14.5 10 14.5 11.5V15"/>',
-    "mail": '<rect x="1" y="3" width="18" height="14" rx="2"/><path d="M1.5 4l8.5 7 8.5-7"/>',
-    "pad": '<rect x="1" y="5" width="18" height="11" rx="5"/><path d="M6 8.5v4M4 10.5h4"/><circle cx="13.5" cy="9.5" r=".6"/><circle cx="15.5" cy="11.8" r=".6"/>',
+    "in": '<rect x="1" y="1" width="18" height="18" rx="4"/><path d="M6 9v6M6 5.5v.1M10 15v-6M10 11.5c0-1.5 1-2.5 2.3-2.5S14.5 10 14.5 11.5V15"/>',
+    "mail": '<rect x="1" y="3" width="18" height="14" rx="3"/><path d="M1.5 4.5l8.5 6.5 8.5-6.5"/>',
+    "pad": '<rect x="1" y="5" width="18" height="11" rx="5.5"/><path d="M6 8.5v4M4 10.5h4"/><circle cx="13.5" cy="9.5" r=".6"/><circle cx="15.5" cy="11.8" r=".6"/>',
 }
+def button(fname, label, value, icon, delay):
+    Wd, H = 232, 64
+    g, gcss = glass(Wd, H, 14, orbs=[(40, 32, 50)])
+    fs = 12 if len(value) <= 20 else 11
+    b = [g,
+         f'<g transform="translate(18 22)" fill="none" stroke="{T.fg}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">{icon}</g>',
+         f'<text x="54" y="27" font-size="11" class="f3">{label}</text>',
+         f'<text x="54" y="45" font-size="{fs}">{esc(value)}</text>',
+         f'<clipPath id="cc"><rect x="1" y="1" width="{Wd-2}" height="{H-2}" rx="14"/></clipPath>',
+         f'<g clip-path="url(#cc)"><rect class="gl" x="-70" y="-10" width="30" height="{H+20}" fill="{T.ink}" fill-opacity="{.10 if T.name=="dark" else .06}" style="animation-delay:{delay}s"/></g>']
+    css = gcss + ".gl{animation:gl 8s ease-in-out infinite}@keyframes gl{0%{transform:skewX(-20deg) translateX(0)}20%,100%{transform:skewX(-20deg) translateX(360px)}}"
+    write(fname, svg(Wd, H, f"{label}: {value}", f"{label}: {value}", css, "".join(b)))
 
-# ------------------------------------------------------------------ FOOTER
+# =================================================================== FOOTER (no box)
 def footer():
-    Wd, H = 960, 96
-    b = [f'<rect width="{Wd}" height="{H}" fill="{BK}"/>',
-         f'<text x="24" y="40" font-size="15"><tspan class="b">srinivas@s10</tspan><tspan class="g1"> ~&gt; </tspan>exit</text>',
-         f'<text x="24" y="66" font-size="13" class="g2">[process completed]</text>',
-         f'<rect class="cu" x="{24 + 20*9:.0f}" y="54" width="9" height="15" fill="{W}"/>',
-         f'<text x="{Wd-24}" y="66" font-size="12" class="g2" text-anchor="end">made in Bengaluru on Arch Linux</text>']
+    Wd, H = 960, 84
+    b = [f'<rect width="{Wd}" height="{H}" rx="10" fill="#0D1117"/>', f'<path d="M16 1H{Wd-16}" stroke="{T.ln}"/>',
+         f'<text x="16" y="40" font-size="15"><tspan class="b">srinivas@s10</tspan><tspan class="f2"> ~&gt; </tspan>exit</text>',
+         f'<text x="16" y="64" font-size="13" class="f3">[process completed]</text>',
+         f'<rect class="cu" x="{16+20*9}" y="52" width="9" height="15" rx="1.5" fill="{T.fg}"/>',
+         f'<text x="{Wd-16}" y="64" font-size="12" class="f3" text-anchor="end">made in Bengaluru on Arch Linux</text>']
     write("footer.svg", svg(Wd, H, "exit", "srinivas@s10 exit. Process completed. Made in Bengaluru on Arch Linux.",
                             ".cu{animation:blink 1.06s step-end infinite}", "".join(b)))
 
+# =================================================================== CONTENT
+CARDS = {
+    "card-ajrasakha.svg": dict(stat="interning / IIT Ropar, remote", live=True, title="Ajrasakha",
+        desc=["A multilingual assistant for farmers. They ask in their own",
+              "language, by text or voice, and get reliable answers fast.",
+              "Expert-verified answers come first. An LLM answers only when",
+              "no verified answer exists, because bad advice can cost a crop."],
+        tags=["React", "TypeScript", "Express", "MongoDB Atlas", "Vector search", "Sarvam AI", "Ollama"],
+        art=art_ajrasakha, W=960, maxc=64,
+        alt="Ajrasakha, AI engineer internship at IIT Ropar (remote): a multilingual assistant for farmers. Questions by text or voice in their own language. Expert-verified golden dataset first, then package-of-practices guidelines, then a general LLM only as a fallback. React, TypeScript, Express, MongoDB Atlas vector search, Sarvam AI, Ollama."),
+    "card-aegis.svg": dict(stat="building / SIH 2026", live=True, title="AEGIS",
+        desc=["Air-gapped agentic AI workbench", "for Mangalore Refinery. Runs a", "7B model on a 4 GB laptop GPU."],
+        tags=["LangGraph", "Ollama", "FAISS", "Docker"], art=art_aegis,
+        alt="AEGIS: air-gapped agentic AI workbench for Mangalore Refinery, Smart India Hackathon 2026. Runs a 7B model on a 4 GB laptop GPU. LangGraph, Ollama, FAISS, Docker."),
+    "card-migration.svg": dict(stat="building / REVA CAIML", live=True, title="Migration Agent",
+        desc=["An LLM agent that upgrades whole", "codebases across breaking version", "changes, then tests its own edits."],
+        tags=["Python", "AST", "LLM agents", "Docker"], art=art_migrate,
+        alt="Codebase migration agent: an LLM agent that upgrades whole codebases across breaking version changes and tests its own edits. Python, AST, Docker."),
+    "card-aquasentinel.svg": dict(stat="shipped / live demo", live=False, title="AquaSentinel",
+        desc=["Mission control for an underwater", "inspection robot: telemetry, route", "planning, AI defect detection."],
+        tags=["React 19", "TypeScript", "Express", "Postgres"], art=art_sonar,
+        alt="AquaSentinel: mission control for an underwater inspection robot with telemetry, route planning and AI defect detection. Opens the live demo."),
+    "card-archagent.svg": dict(stat="shipped", live=False, title="ArchAgent",
+        desc=["A plain-language brief becomes 3D", "renders and an itemised INR cost", "estimate in under 60 seconds."],
+        tags=["React", "TypeScript", "Gemini API"], art=art_arch,
+        alt="ArchAgent: a plain-language building brief becomes 3D renders and an itemised INR cost estimate in under 60 seconds. React, TypeScript, Gemini."),
+    "card-mlops.svg": dict(stat="shipped", live=False, title="health-risk-mlops",
+        desc=["A risk model taken to production", "shape: served, containerised,", "tracked, tested on every push."],
+        tags=["FastAPI", "Docker", "MLflow", "Actions"], art=art_mlops,
+        alt="health-risk-mlops: a health-risk model served by FastAPI, containerised with Docker, tracked in MLflow, tested by GitHub Actions."),
+    "card-debugext.svg": dict(stat="shipped", live=False, title="Debug.ext",
+        desc=["Chrome extension that catches", "runtime errors, ranks them P0-P3,", "and drafts the fix."],
+        tags=["Chrome MV3", "FastAPI", "Streamlit"], art=art_debug,
+        alt="Debug.ext: Chrome extension that catches runtime errors, ranks them P0 to P3, and drafts the fix. FastAPI and Streamlit."),
+}
+HEADERS = [("now", "in progress"), ("shipped", "finished and public"), ("stack", "tools I can defend in an interview"),
+           ("activity", "the last twelve months"), ("contact", "fastest reply: email")]
+BUTTONS = [("btn-portfolio.svg", "portfolio", "srinivas-rc.is-a.dev", "globe", "https://srinivas-rc.is-a.dev"),
+           ("btn-linkedin.svg", "linkedin", "Srinivas R C", "in", "https://www.linkedin.com/in/srinivas-r-c-169406294"),
+           ("btn-email.svg", "email", "srinivasrc0408@gmail.com", "mail", "mailto:srinivasrc0408@gmail.com"),
+           ("btn-steam.svg", "steam", "off the clock", "pad", "https://steamcommunity.com/profiles/76561199545795989/")]
+LINKS = {"card-aegis.svg": "https://github.com/srinivas-rc0408/aegis",
+         "card-migration.svg": "https://github.com/srinivas-rc0408/codebase-migration-agent",
+         "card-aquasentinel.svg": "https://aqua-wheat.vercel.app",
+         "card-archagent.svg": "https://github.com/srinivas-rc0408/archagent",
+         "card-mlops.svg": "https://github.com/srinivas-rc0408/health-risk-mlops"}
+
+def build_all():
+    alts = {}
+    for theme in ["dark"]:
+        use(theme)
+        alts["hero"] = hero()
+        for s, n in HEADERS: header(s, n)
+        for f, c in CARDS.items():
+            W = c.get("W", 470)
+            global AX
+            AX = W - 24 - 78
+            card(f, c["stat"], c["live"], c["title"], c["desc"], c["tags"], c["art"], c["alt"], Wd=W, maxc=c.get("maxc", 34))
+        alts["stack"] = stack()
+        for i, (f, l, v, ic, _) in enumerate(BUTTONS): button(f, l, v, ICONS[ic], i * .5)
+        footer()
+    return alts
+
+def pic(name, alt, width, href=None):
+    p = f'<img src="./assets/{name}" width="{width}" alt="{esc(alt, {chr(34): "&quot;"})}" />'
+    return f'<a href="{href}">{p}</a>' if href else p
+
+def readme(alts):
+    FW = "98.5%"
+    H = lambda s, n: pic(f"h-{s}.svg", f"~/{s}: {n}", FW)
+    card = lambda f, w="49%": pic(f, CARDS[f]["alt"], w, LINKS.get(f))
+    snake = ('<picture><source media="(prefers-color-scheme: dark)" srcset="./profile/snake-dark.svg" />'
+             '<source media="(prefers-color-scheme: light)" srcset="./profile/snake-light.svg" />'
+             '<img src="./profile/snake-dark.svg" width="98.5%" alt="A snake eating the last year of contributions, square by square" /></picture>')
+    hd = dict(HEADERS)
+    out = f"""<!-- You opened the source. Respect. Every image here is hand-built SVG from assets/build.py. Say hi: srinivasrc0408@gmail.com -->
+
+{pic("hero.svg", alts["hero"], FW, "https://srinivas-rc.is-a.dev")}
+
+{H("now", hd["now"])}
+
+{card("card-ajrasakha.svg", FW)}
+
+<p>
+  {card("card-aegis.svg")}
+  {card("card-migration.svg")}
+</p>
+
+{H("shipped", hd["shipped"])}
+
+<p>
+  {card("card-aquasentinel.svg")}
+  {card("card-archagent.svg")}
+  {card("card-mlops.svg")}
+  {card("card-debugext.svg")}
+</p>
+
+
+{H("stack", hd["stack"])}
+
+{pic("stack.svg", alts["stack"], FW)}
+
+{H("activity", hd["activity"])}
+
+{snake}
+
+{H("contact", hd["contact"])}
+
+<p>
+""" + "\n".join(f"  {pic(f, f'{l}: {v}', '24%', href)}" for f, l, v, _, href in BUTTONS) + f"""
+</p>
+
+{pic("footer.svg", "srinivas@s10 exit. Process completed. Made in Bengaluru on Arch Linux.", FW)}
+"""
+    open("README.md", "w").write(out)
+
 if __name__ == "__main__":
-    hero()
-    for s, n in [("now", "in progress"), ("shipped", "finished and public"), ("stack", "tools I can defend in an interview"),
-                 ("activity", "the last twelve months"), ("contact", "fastest reply: email")]:
-        header(s, n)
-    card("card-aegis.svg", "building / SIH 2026", True, "AEGIS",
-         ["Air-gapped agentic AI workbench", "for Mangalore Refinery. Runs a", "7B model on a 4 GB laptop GPU."],
-         ["LangGraph", "Ollama", "FAISS", "Docker"], *art_aegis(),
-         "AEGIS: air-gapped agentic AI workbench for Mangalore Refinery, Smart India Hackathon 2026. Runs a 7B model on a 4 GB laptop GPU. LangGraph, Ollama, FAISS, Docker.")
-    card("card-migration.svg", "building / REVA CAIML", True, "Migration Agent",
-         ["An LLM agent that upgrades whole", "codebases across breaking version", "changes, then tests its own edits."],
-         ["Python", "AST", "LLM agents", "Docker"], *art_migrate(),
-         "Codebase migration agent: an LLM agent that upgrades whole codebases across breaking version changes and tests its own edits. Python, AST, Docker.")
-    card("card-aquasentinel.svg", "shipped / live demo", False, "AquaSentinel",
-         ["Mission control for an underwater", "inspection robot: telemetry, route", "planning, AI defect detection."],
-         ["React 19", "TypeScript", "Express", "Postgres"], *art_sonar(),
-         "AquaSentinel: mission control for an underwater inspection robot with telemetry, route planning and AI defect detection. Live demo at aqua-wheat.vercel.app.")
-    card("card-archagent.svg", "shipped", False, "ArchAgent",
-         ["A plain-language brief becomes 3D", "renders and an itemised INR cost", "estimate in under 60 seconds."],
-         ["React", "TypeScript", "Gemini API"], *art_arch(),
-         "ArchAgent: a plain-language building brief becomes 3D renders and an itemised INR cost estimate in under 60 seconds. React, TypeScript, Gemini.")
-    card("card-mlops.svg", "shipped", False, "health-risk-mlops",
-         ["A risk model taken to production", "shape: served, containerised,", "tracked, tested on every push."],
-         ["FastAPI", "Docker", "MLflow", "Actions"], *art_mlops(),
-         "health-risk-mlops: a health-risk model served by FastAPI, containerised with Docker, tracked in MLflow, tested by GitHub Actions.")
-    card("card-debugext.svg", "shipped", False, "Debug.ext",
-         ["Chrome extension that catches", "runtime errors, ranks them P0-P3,", "and drafts the fix."],
-         ["Chrome MV3", "FastAPI", "Streamlit"], *art_debug(),
-         "Debug.ext: Chrome extension that catches runtime errors, ranks them P0 to P3, and drafts the fix. FastAPI and Streamlit.")
-    stack()
-    button("btn-portfolio.svg", "portfolio", "srinivas-rc.is-a.dev", ICONS["globe"], 0)
-    button("btn-linkedin.svg", "linkedin", "Srinivas R C", ICONS["in"], 0.5)
-    button("btn-email.svg", "email", "srinivasrc0408@gmail.com", ICONS["mail"], 1.0)
-    button("btn-steam.svg", "steam", "off the clock", ICONS["pad"], 1.5)
-    footer()
+    alts = build_all()
+    readme(alts)
+    print("built", sum(len(f) for _, _, f in os.walk("assets")), "files")
