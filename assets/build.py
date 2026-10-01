@@ -96,8 +96,11 @@ def hero():
     # title bar
     b.append(f'<text x="{Wd/2}" y="27" font-size="12" class="f3" text-anchor="middle">fish  /  srinivas@s10  /  ~</text>')
     b.append(f'<path d="M1 42H{Wd-1}" stroke="{T.ln}"/>')
-    for i in range(3):
-        b.append(f'<circle cx="{26+i*18}" cy="22" r="5" fill="none" stroke="{T.d1}"/>')
+    for i, c in enumerate(["#FF5F57", "#FEBC2E", "#28C840"]):
+        b.append(f'<circle cx="{26+i*20}" cy="22" r="6" fill="{c}"/>'
+                 f'<circle cx="{26+i*20}" cy="22" r="5.5" fill="none" stroke="#000" stroke-opacity=".25"/>'
+                 f'<ellipse cx="{26+i*20}" cy="19.6" rx="3.2" ry="1.6" fill="#fff" fill-opacity=".28"/>')
+    b.append(f'<text x="{Wd-24}" y="27" font-size="11.5" class="f3" text-anchor="end">12.97&#176; N  77.59&#176; E</text>')
     PX = 44
     prompt = f'<tspan class="b">srinivas@s10</tspan><tspan class="f2"> ~&gt; </tspan>'
     PC = len("srinivas@s10 ~> ")
@@ -182,8 +185,20 @@ def hero():
     tend = t0 + n[0] * st
     yb = H - 36
     b.append(f'<g class="in" style="animation-delay:{tend+0.15:.2f}s"><text x="{PX}" y="{yb}" font-size="{FS}">{prompt}</text></g>')
-    b.append(f'<g class="in" style="animation-delay:{tend+0.2:.2f}s"><rect class="bl2" x="{cx0:.1f}" y="{yb-13}" width="{CW}" height="17" rx="1.5" fill="{T.fg}"/></g>')
-    b.append(f'<text x="{Wd-44}" y="{yb}" font-size="12" class="f3" text-anchor="end">12.97&#176; N  77.59&#176; E</text>')
+    cmd = "open srinivas-rc.is-a.dev"
+    ts = tend + 0.45
+    for i, ch in enumerate(cmd):
+        b.append(f'<text class="in" x="{cx0+i*CW:.1f}" y="{yb}" font-size="{FS}" style="animation-delay:{ts+i*0.04:.2f}s">{esc(ch)}</text>')
+    tdone = ts + len(cmd) * 0.04
+    b.append(f'<g class="in" style="animation-delay:{tdone:.2f}s"><rect class="bl2" x="{cx0+len(cmd)*CW:.1f}" y="{yb-13}" width="{CW}" height="17" rx="1.5" fill="{T.fg}"/></g>')
+    pw, ph = 252, 34
+    px, py = Wd - 40 - pw, yb - 23
+    b.append(f'<g class="in" style="animation-delay:{tdone+0.1:.2f}s">'
+             f'<rect class="cta" x="{px}" y="{py}" width="{pw}" height="{ph}" rx="17" fill="#fff" fill-opacity=".06" stroke="#fff" stroke-opacity=".28"/>'
+             f'<circle class="rg" cx="{px+20}" cy="{py+17}" r="4" fill="none" stroke="{T.fg}" style="transform-origin:{px+20}px {py+17}px"/>'
+             f'<circle cx="{px+20}" cy="{py+17}" r="3.4" fill="{T.fg}"/>'
+             f'<text x="{px+34}" y="{py+21.5}" font-size="12.5">click to open portfolio</text>'
+             f'<path d="M{px+pw-28} {py+21}l7-7M{px+pw-26} {py+14}h5v5" fill="none" stroke="{T.fg}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>')
     css = gcss + f"""
 .in{{animation:show 0s step-end both}}
 .cell{{animation:lit .4s cubic-bezier(.2,.7,.2,1) both}}
@@ -192,12 +207,14 @@ def hero():
 @keyframes type{{from{{transform:translateX(0)}}to{{transform:translateX({9*CW}px)}}}}
 @keyframes hide{{from{{opacity:1}}to{{opacity:0}}}}
 .bl2{{animation:blink 1.06s step-end infinite}}
+.cta{{animation:cta 3.2s ease-in-out infinite}}
+@keyframes cta{{0%,100%{{stroke-opacity:.28}}50%{{stroke-opacity:.6}}}}
 .rg{{animation:ring 2.2s cubic-bezier(.2,.6,.3,1) infinite}}
 @media (prefers-reduced-motion:reduce){{.cur1{{display:none}}}}
 """
     alt = ("Terminal running fastfetch. S10 drawn in contribution squares. Srinivas R C, AI engineer intern at IIT Ropar (remote) "
            "working on Ajrasakha. Building AEGIS for SIH 2026 and a codebase migration agent at REVA CAIML. "
-           "B.Tech AI and ML, REVA University 2027. Open to 2027 AI/ML roles. Arch Linux, niri, fish and bash.")
+           "B.Tech AI and ML, REVA University 2027. Open to 2027 AI/ML roles. Click to open the portfolio at srinivas-rc.is-a.dev.")
     write("hero.svg", svg(Wd, H, "srinivas@s10 fastfetch", alt, css, "".join(b)))
     return alt
 
@@ -371,6 +388,65 @@ def art_ajrasakha():
 .l2{{animation:x2 9s linear infinite}}@keyframes x2{{0%,90%{{fill:{T.fg}}}91%,97%{{fill:{T.inv}}}99%,100%{{fill:{T.fg}}}}}
 .k{{opacity:.6}}"""
 
+
+# =================================================================== EXPERIENCE
+EXPERIENCE = [
+    dict(role="AI Engineer Intern", org="IIT Ropar", when="now", where="remote", live=True,
+         line="Ajrasakha: a multilingual farm assistant. Expert-verified answers first, local LLMs as fallback.",
+         tags=["RAG", "MongoDB vector search", "Sarvam AI", "Ollama"]),
+    dict(role="Intern", org="REVA Center for AI & ML", when="now", where="Bengaluru", live=True,
+         line="Building an LLM agent that migrates whole codebases across breaking version changes.",
+         tags=["LLM agents", "AST", "Docker"]),
+    dict(role="Team Alpha", org="Smart India Hackathon 2026", when="2026", where="PS SIH26117", live=False,
+         line="AEGIS: an air-gapped agentic AI workbench for Mangalore Refinery, running on a 4 GB GPU.",
+         tags=["LangGraph", "FAISS", "Qwen2.5-7B"]),
+    dict(role="Head of Media", org="Yantra IoT Club, REVA", when="core member", where="Bengaluru", live=False,
+         line="Runs media for the university's IoT club.", tags=[]),
+]
+
+def experience():
+    Wd = 960
+    rowh = 96
+    H = 30 + len(EXPERIENCE) * rowh - 4
+    g, gcss = glass(Wd, H, 16, orbs=[(Wd - 80, 10, 130), (60, H, 120)])
+    b = [g]
+    lx = 46
+    y0 = 52
+    yl = y0 + (len(EXPERIENCE) - 1) * rowh
+    b.append(f'<path d="M{lx} {y0}V{yl}" stroke="{T.d2}" stroke-width="1.5"/>')
+    b.append(f'<rect class="tr" x="{lx-1}" y="{y0}" width="2" height="34" rx="1" fill="{T.fg}"/>')
+    for i, e in enumerate(EXPERIENCE):
+        y = y0 + i * rowh
+        if e["live"]:
+            b.append(f'<circle class="rg" cx="{lx}" cy="{y}" r="5" fill="none" stroke="{T.fg}" style="transform-origin:{lx}px {y}px;animation-delay:{i*.4}s"/>'
+                     f'<circle cx="{lx}" cy="{y}" r="5" fill="{T.fg}"/>')
+        else:
+            b.append(f'<circle cx="{lx}" cy="{y}" r="5" fill="#10151D" stroke="{T.fg2}" stroke-width="1.5"/>')
+        tx = 74
+        rw = len(e["role"]) * 9.6
+        b.append(f'<text x="{tx}" y="{y+5}" font-size="16" class="b">{esc(e["role"])}</text>'
+                 f'<text x="{tx+rw+10:.0f}" y="{y+5}" font-size="13" class="f2">{esc(e["org"])}</text>')
+        pill = f'{e["when"]}  /  {e["where"]}'
+        pw = len(pill) * 7.2 + 26
+        px = Wd - 28 - pw
+        fill = 'fill="#fff" fill-opacity=".09"' if e["live"] else 'fill="none"'
+        b.append(f'<rect x="{px:.0f}" y="{y-11}" width="{pw:.0f}" height="22" rx="11" {fill} stroke="{T.ln}"/>'
+                 f'<text x="{px+pw/2:.0f}" y="{y+4}" font-size="11.5" class="{"" if e["live"] else "f2"}" text-anchor="middle">{esc(pill)}</text>')
+        assert len(e["line"]) <= 100, e["line"]
+        b.append(f'<text x="{tx}" y="{y+28}" font-size="12.5" class="f2">{esc(e["line"])}</text>')
+        cx = tx
+        for t in e["tags"]:
+            w = len(t) * 6 + 18
+            b.append(f'<rect x="{cx:.0f}" y="{y+42}" width="{w:.0f}" height="20" rx="10" fill="#fff" fill-opacity=".04" stroke="{T.ln}"/>'
+                     f'<text x="{cx+w/2:.0f}" y="{y+55.5}" font-size="10" class="f2" text-anchor="middle">{esc(t)}</text>')
+            cx += w + 6
+    css = gcss + f""".rg{{animation:ring 2.2s cubic-bezier(.2,.6,.3,1) infinite}}
+.tr{{animation:tr 5s cubic-bezier(.45,0,.55,1) infinite}}
+@keyframes tr{{0%{{transform:translateY(0);opacity:0}}10%{{opacity:.9}}85%{{opacity:.9}}100%{{transform:translateY({yl-y0-34}px);opacity:0}}}}"""
+    alt = "Experience. " + " ".join(f'{e["role"]}, {e["org"]} ({e["when"]}, {e["where"]}): {e["line"]}' for e in EXPERIENCE)
+    write("experience.svg", svg(Wd, H, "Experience", alt, css, "".join(b)))
+    return alt
+
 # =================================================================== STACK
 STACK = [("llm systems", ["LangGraph", "Ollama", "FAISS", "ChromaDB", "sentence-transformers", "Gemini API"]),
          ("ml + mlops", ["Python", "NumPy", "MLflow", "Docker", "GitHub Actions"]),
@@ -468,7 +544,7 @@ CARDS = {
         tags=["Chrome MV3", "FastAPI", "Streamlit"], art=art_debug,
         alt="Debug.ext: Chrome extension that catches runtime errors, ranks them P0 to P3, and drafts the fix. FastAPI and Streamlit."),
 }
-HEADERS = [("now", "in progress"), ("shipped", "finished and public"), ("stack", "tools I can defend in an interview"),
+HEADERS = [("experience", "where I work"), ("now", "in progress"), ("shipped", "finished and public"), ("stack", "tools I can defend in an interview"),
            ("activity", "the last twelve months"), ("contact", "fastest reply: email")]
 BUTTONS = [("btn-portfolio.svg", "portfolio", "srinivas-rc.is-a.dev", "globe", "https://srinivas-rc.is-a.dev"),
            ("btn-linkedin.svg", "linkedin", "Srinivas R C", "in", "https://www.linkedin.com/in/srinivas-r-c-169406294"),
@@ -492,6 +568,7 @@ def build_all():
             AX = W - 24 - 78
             card(f, c["stat"], c["live"], c["title"], c["desc"], c["tags"], c["art"], c["alt"], Wd=W, maxc=c.get("maxc", 34))
         alts["stack"] = stack()
+        alts["exp"] = experience()
         for i, (f, l, v, ic, _) in enumerate(BUTTONS): button(f, l, v, ICONS[ic], i * .5)
         footer()
     return alts
@@ -511,6 +588,10 @@ def readme(alts):
     out = f"""<!-- You opened the source. Respect. Every image here is hand-built SVG from assets/build.py. Say hi: srinivasrc0408@gmail.com -->
 
 {pic("hero.svg", alts["hero"], FW, "https://srinivas-rc.is-a.dev")}
+
+{H("experience", hd["experience"])}
+
+{pic("experience.svg", alts["exp"], FW)}
 
 {H("now", hd["now"])}
 

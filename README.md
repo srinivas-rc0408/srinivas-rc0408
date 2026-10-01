@@ -1,6 +1,10 @@
 <!-- You opened the source. Respect. Every image here is hand-built SVG from assets/build.py. Say hi: srinivasrc0408@gmail.com -->
 
-<a href="https://srinivas-rc.is-a.dev"><img src="./assets/hero.svg" width="98.5%" alt="Terminal running fastfetch. S10 drawn in contribution squares. Srinivas R C, AI engineer intern at IIT Ropar (remote) working on Ajrasakha. Building AEGIS for SIH 2026 and a codebase migration agent at REVA CAIML. B.Tech AI and ML, REVA University 2027. Open to 2027 AI/ML roles. Arch Linux, niri, fish and bash." /></a>
+<a href="https://srinivas-rc.is-a.dev"><img src="./assets/hero.svg" width="98.5%" alt="Terminal running fastfetch. S10 drawn in contribution squares. Srinivas R C, AI engineer intern at IIT Ropar (remote) working on Ajrasakha. Building AEGIS for SIH 2026 and a codebase migration agent at REVA CAIML. B.Tech AI and ML, REVA University 2027. Open to 2027 AI/ML roles. Click to open the portfolio at srinivas-rc.is-a.dev." /></a>
+
+<img src="./assets/h-experience.svg" width="98.5%" alt="~/experience: where I work" />
+
+<img src="./assets/experience.svg" width="98.5%" alt="Experience. AI Engineer Intern, IIT Ropar (now, remote): Ajrasakha: a multilingual farm assistant. Expert-verified answers first, local LLMs as fallback. Intern, REVA Center for AI &amp; ML (now, Bengaluru): Building an LLM agent that migrates whole codebases across breaking version changes. Team Alpha, Smart India Hackathon 2026 (2026, PS SIH26117): AEGIS: an air-gapped agentic AI workbench for Mangalore Refinery, running on a 4 GB GPU. Head of Media, Yantra IoT Club, REVA (core member, Bengaluru): Runs media for the university's IoT club." />
 
 <img src="./assets/h-now.svg" width="98.5%" alt="~/now: in progress" />
 
