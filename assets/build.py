@@ -146,11 +146,14 @@ def hero():
            ("Project", "Ajrasakha, multilingual farm assistant"),
            ("Building", "AEGIS, air-gapped AI workbench (SIH '26)"),
            ("Agent", "Codebase migration agent, REVA CAIML"),
-           ("Degree", "B.Tech AI &amp; ML, REVA University '27"),
-           ("Stack", "Python, TypeScript, LangGraph, Ollama")]
-    rig = [("OS", "Arch Linux x86_64"), ("Host", "ASUS TUF Gaming F15 (FX506HE)"),
-           ("CPU", "Intel i7-11800H (16) @ 4.60 GHz"), ("GPU", "NVIDIA RTX 3050 Ti Mobile, 4 GB"),
-           ("Memory", "16 GB"), ("WM", "niri"), ("Shell", "fish, bash")]
+           ("Degree", "B.Tech AI &amp; ML, REVA University '27")]
+    rig = [("Focus", "RAG, LLM agents, offline inference"),
+           ("Stack", "Python, TypeScript, LangGraph, FastAPI"),
+           ("Models", "Qwen2.5, DeepSeek-R1, moondream2 (Ollama)"),
+           ("Certs", "NPTEL Deep Learning, IIT Ropar"),
+           ("Learning", "NPTEL AI Foundations, IIT Delhi"),
+           ("Lead", "Head of Media, Yantra IoT Club"),
+           ("Env", "Arch Linux, niri, fish + bash")]
     t0, st = 1.18, 0.07
     n = [0]
     def line(inner):
