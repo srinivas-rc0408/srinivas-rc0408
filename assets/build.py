@@ -96,10 +96,15 @@ def hero():
     # title bar
     b.append(f'<text x="{Wd/2}" y="27" font-size="12" class="f3" text-anchor="middle">fish  /  srinivas@s10  /  ~</text>')
     b.append(f'<path d="M1 42H{Wd-1}" stroke="{T.ln}"/>')
-    for i, c in enumerate(["#FF5F57", "#FEBC2E", "#28C840"]):
-        b.append(f'<circle cx="{26+i*20}" cy="22" r="6" fill="{c}"/>'
-                 f'<circle cx="{26+i*20}" cy="22" r="5.5" fill="none" stroke="#000" stroke-opacity=".25"/>'
-                 f'<ellipse cx="{26+i*20}" cy="19.6" rx="3.2" ry="1.6" fill="#fff" fill-opacity=".28"/>')
+    tl = [("#FF8A80", "#E5372E", "#9E1B14"), ("#7BEA8E", "#25B347", "#14712B"), ("#8CC8FF", "#2D86E8", "#1752A3")]
+    defs = "".join(f'<radialGradient id="tl{i}" cx=".38" cy=".3" r=".75"><stop offset="0" stop-color="{a}"/>'
+                   f'<stop offset=".55" stop-color="{m}"/><stop offset="1" stop-color="{d}"/></radialGradient>' for i, (a, m, d) in enumerate(tl))
+    b.append(f'<defs>{defs}</defs>')
+    for i in range(3):
+        cx = 30 + i * 26
+        b.append(f'<circle cx="{cx}" cy="22" r="8" fill="url(#tl{i})"/>'
+                 f'<circle cx="{cx}" cy="22" r="7.5" fill="none" stroke="#000" stroke-opacity=".35"/>'
+                 f'<ellipse cx="{cx-1}" cy="18.6" rx="4.2" ry="2.2" fill="#fff" fill-opacity=".45"/>')
     b.append(f'<text x="{Wd-24}" y="27" font-size="11.5" class="f3" text-anchor="end">12.97&#176; N  77.59&#176; E</text>')
     PX = 44
     prompt = f'<tspan class="b">srinivas@s10</tspan><tspan class="f2"> ~&gt; </tspan>'
@@ -188,17 +193,34 @@ def hero():
     cmd = "open srinivas-rc.is-a.dev"
     ts = tend + 0.45
     for i, ch in enumerate(cmd):
-        b.append(f'<text class="in" x="{cx0+i*CW:.1f}" y="{yb}" font-size="{FS}" style="animation-delay:{ts+i*0.04:.2f}s">{esc(ch)}</text>')
-    tdone = ts + len(cmd) * 0.04
+        b.append(f'<text class="in" x="{cx0+i*CW:.1f}" y="{yb}" font-size="{FS}" style="animation-delay:{ts+i*0.03:.2f}s">{esc(ch)}</text>')
+    tdone = ts + len(cmd) * 0.03
     b.append(f'<g class="in" style="animation-delay:{tdone:.2f}s"><rect class="bl2" x="{cx0+len(cmd)*CW:.1f}" y="{yb-13}" width="{CW}" height="17" rx="1.5" fill="{T.fg}"/></g>')
-    pw, ph = 252, 34
-    px, py = Wd - 40 - pw, yb - 23
+    pw, ph = 252, 36
+    px, py = Wd - 40 - pw, yb - 24
+    bx, by = px + pw - 70, py + ph / 2          # click point on the button
+    b.append(f'<defs><linearGradient id="btn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/>'
+             f'<stop offset="1" stop-color="#fff" stop-opacity=".05"/></linearGradient>'
+             f'<linearGradient id="bsh" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/>'
+             f'<stop offset=".5" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>'
+             f'<clipPath id="bc"><rect x="{px}" y="{py}" width="{pw}" height="{ph}" rx="{ph/2}"/></clipPath></defs>')
     b.append(f'<g class="in" style="animation-delay:{tdone+0.1:.2f}s">'
-             f'<rect class="cta" x="{px}" y="{py}" width="{pw}" height="{ph}" rx="17" fill="#fff" fill-opacity=".06" stroke="#fff" stroke-opacity=".28"/>'
-             f'<circle class="rg" cx="{px+20}" cy="{py+17}" r="4" fill="none" stroke="{T.fg}" style="transform-origin:{px+20}px {py+17}px"/>'
-             f'<circle cx="{px+20}" cy="{py+17}" r="3.4" fill="{T.fg}"/>'
-             f'<text x="{px+34}" y="{py+21.5}" font-size="12.5">click to open portfolio</text>'
-             f'<path d="M{px+pw-28} {py+21}l7-7M{px+pw-26} {py+14}h5v5" fill="none" stroke="{T.fg}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g>')
+             f'<g class="press" style="transform-origin:{px+pw/2}px {py+ph/2}px">'
+             f'<rect x="{px}" y="{py+2}" width="{pw}" height="{ph}" rx="{ph/2}" fill="#000" fill-opacity=".35"/>'
+             f'<rect class="cta" x="{px}" y="{py}" width="{pw}" height="{ph}" rx="{ph/2}" fill="url(#btn)" stroke="#fff" stroke-opacity=".32"/>'
+             f'<path d="M{px+ph/2} {py+.8}H{px+pw-ph/2}" stroke="#fff" stroke-opacity=".45"/>'
+             f'<g clip-path="url(#bc)"><rect class="bshine" x="{px-80}" y="{py-4}" width="50" height="{ph+8}" fill="url(#bsh)" style="transform-origin:{px-55}px {py+ph/2}px"/>'
+             f'<circle class="rip" cx="{bx}" cy="{by}" r="40" fill="#fff" style="transform-origin:{bx}px {by}px"/></g>'
+             f'<circle class="rg" cx="{px+20}" cy="{py+ph/2}" r="4" fill="none" stroke="{T.fg}" style="transform-origin:{px+20}px {py+ph/2}px"/>'
+             f'<circle cx="{px+20}" cy="{py+ph/2}" r="3.4" fill="{T.fg}"/>'
+             f'<text x="{px+34}" y="{py+ph/2+4.5}" font-size="12.5" class="b">click to open portfolio</text>'
+             f'<path d="M{px+pw-28} {py+ph/2+4}l7-7M{px+pw-26} {py+ph/2-3}h5v5" fill="none" stroke="{T.fg}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>'
+             f'</g></g>')
+    # mouse pointer (classic arrow) that glides in and clicks
+    arrow = "M0 0L0 17L4.6 12.8L7.6 19.4L10.4 18.2L7.5 11.8L13.4 11.6Z"
+    b.append(f'<g class="ptr" style="--sx:{70}px;--sy:{60}px">'
+             f'<g transform="translate({bx-2} {by-3})"><g class="ptrc"><path d="{arrow}" fill="#fff" stroke="#0D1117" stroke-width="1.3" stroke-linejoin="round"/></g></g></g>')
+    T_CTA = tdone + 0.8
     css = gcss + f"""
 .in{{animation:show 0s step-end both}}
 .cell{{animation:lit .4s cubic-bezier(.2,.7,.2,1) both}}
@@ -207,10 +229,20 @@ def hero():
 @keyframes type{{from{{transform:translateX(0)}}to{{transform:translateX({9*CW}px)}}}}
 @keyframes hide{{from{{opacity:1}}to{{opacity:0}}}}
 .bl2{{animation:blink 1.06s step-end infinite}}
-.cta{{animation:cta 3.2s ease-in-out infinite}}
-@keyframes cta{{0%,100%{{stroke-opacity:.28}}50%{{stroke-opacity:.6}}}}
+.cta{{animation:cta 7s ease-in-out {T_CTA:.2f}s infinite}}
+@keyframes cta{{0%,40%,70%,100%{{stroke-opacity:.32}}46%,56%{{stroke-opacity:.85}}}}
+.press{{animation:press 7s cubic-bezier(.3,0,.3,1) {T_CTA:.2f}s infinite}}
+@keyframes press{{0%,44%{{transform:scale(1)}}47%{{transform:scale(.955)}}53%,100%{{transform:scale(1)}}}}
+.bshine{{animation:bsh 7s ease-in-out {T_CTA:.2f}s infinite}}
+@keyframes bsh{{0%,8%{{transform:skewX(-20deg) translateX(0)}}26%,100%{{transform:skewX(-20deg) translateX({pw+160}px)}}}}
+.rip{{opacity:0;animation:rip 7s ease-out {T_CTA:.2f}s infinite}}
+@keyframes rip{{0%,46%{{transform:scale(0);opacity:0}}47%{{transform:scale(.05);opacity:.35}}66%{{transform:scale(1.6);opacity:0}}100%{{opacity:0}}}}
+.ptr{{opacity:0;animation:ptr 7s cubic-bezier(.45,0,.2,1) {T_CTA:.2f}s infinite}}
+@keyframes ptr{{0%,10%{{transform:translate(var(--sx),var(--sy));opacity:0}}16%{{opacity:1}}40%,58%{{transform:translate(0,0);opacity:1}}74%,100%{{transform:translate(-14px,22px);opacity:0}}}}
+.ptrc{{animation:ptrc 7s ease-in-out {T_CTA:.2f}s infinite}}
+@keyframes ptrc{{0%,44%{{transform:scale(1)}}47%{{transform:scale(.82)}}53%,100%{{transform:scale(1)}}}}
 .rg{{animation:ring 2.2s cubic-bezier(.2,.6,.3,1) infinite}}
-@media (prefers-reduced-motion:reduce){{.cur1{{display:none}}}}
+@media (prefers-reduced-motion:reduce){{.cur1,.ptr{{display:none}}}}
 """
     alt = ("Terminal running fastfetch. S10 drawn in contribution squares. Srinivas R C, AI engineer intern at IIT Ropar (remote) "
            "working on Ajrasakha. Building AEGIS for SIH 2026 and a codebase migration agent at REVA CAIML. "
