@@ -1,45 +1,45 @@
 <!-- You opened the source. Respect. Every image here is hand-built SVG from assets/build.py. Say hi: srinivasrc0408@gmail.com -->
 
-<a href="https://srinivas-rc.is-a.dev"><img src="./assets/hero.svg" width="98.5%" alt="Terminal running fastfetch. S10 drawn in contribution squares. Srinivas R C, AI engineer intern at IIT Ropar (remote) working on Ajrasakha. Building AEGIS for SIH 2026 and a codebase migration agent at REVA CAIML. B.Tech AI and ML, REVA University 2027. Open to 2027 AI/ML roles. Click to open the portfolio at srinivas-rc.is-a.dev." /></a>
+<a href="https://srinivas-rc.is-a.dev"><img src="./assets/hero.svg?v=36be5dad" width="98.5%" alt="Terminal running fastfetch. S10 drawn in contribution squares. Srinivas R C, AI engineer intern at IIT Ropar (remote) working on Ajrasakha. Building AEGIS for SIH 2026 and a codebase migration agent at REVA CAIML. B.Tech AI and ML, REVA University 2027. Open to 2027 AI/ML roles. Click to open the portfolio at srinivas-rc.is-a.dev." /></a>
 
-<img src="./assets/h-experience.svg" width="98.5%" alt="~/experience: where I work" />
+<img src="./assets/h-experience.svg?v=f11bde8b" width="98.5%" alt="~/experience: where I work" />
 
-<img src="./assets/experience.svg" width="98.5%" alt="Experience. AI Engineer Intern, IIT Ropar (now, remote): Ajrasakha: a multilingual farm assistant. Expert-verified answers first, local LLMs as fallback. Intern, REVA Center for AI &amp; ML (now, Bengaluru): Building an LLM agent that migrates whole codebases across breaking version changes. Team Alpha, Smart India Hackathon 2026 (2026, PS SIH26117): AEGIS: an air-gapped agentic AI workbench for Mangalore Refinery, running on a 4 GB GPU. Head of Media, Yantra IoT Club, REVA (core member, Bengaluru): Runs media for the university's IoT club." />
+<img src="./assets/experience.svg?v=1ecdc68f" width="98.5%" alt="Experience. AI Engineer Intern, IIT Ropar (now, remote): Ajrasakha: a multilingual farm assistant. Expert-verified answers first, local LLMs as fallback. Intern, REVA Center for AI &amp; ML (now, Bengaluru): Building an LLM agent that migrates whole codebases across breaking version changes. Team Alpha, Smart India Hackathon 2026 (2026, PS SIH26117): AEGIS: an air-gapped agentic AI workbench for Mangalore Refinery, running on a 4 GB GPU. Head of Media, Yantra IoT Club, REVA (core member, Bengaluru): Runs media for the university's IoT club." />
 
-<img src="./assets/h-now.svg" width="98.5%" alt="~/now: in progress" />
+<img src="./assets/h-now.svg?v=7b6b4410" width="98.5%" alt="~/now: in progress" />
 
-<img src="./assets/card-ajrasakha.svg" width="98.5%" alt="Ajrasakha, AI engineer internship at IIT Ropar (remote): a multilingual assistant for farmers. Questions by text or voice in their own language. Expert-verified golden dataset first, then package-of-practices guidelines, then a general LLM only as a fallback. React, TypeScript, Express, MongoDB Atlas vector search, Sarvam AI, Ollama." />
-
-<p>
-  <a href="https://github.com/srinivas-rc0408/aegis"><img src="./assets/card-aegis.svg" width="49%" alt="AEGIS: air-gapped agentic AI workbench for Mangalore Refinery, Smart India Hackathon 2026. Runs a 7B model on a 4 GB laptop GPU. LangGraph, Ollama, FAISS, Docker." /></a>
-  <a href="https://github.com/srinivas-rc0408/codebase-migration-agent"><img src="./assets/card-migration.svg" width="49%" alt="Codebase migration agent: an LLM agent that upgrades whole codebases across breaking version changes and tests its own edits. Python, AST, Docker." /></a>
-</p>
-
-<img src="./assets/h-shipped.svg" width="98.5%" alt="~/shipped: finished and public" />
+<img src="./assets/card-ajrasakha.svg?v=24b91b9c" width="98.5%" alt="Ajrasakha, AI engineer internship at IIT Ropar (remote): a multilingual assistant for farmers. Questions by text or voice in their own language. Expert-verified golden dataset first, then package-of-practices guidelines, then a general LLM only as a fallback. React, TypeScript, Express, MongoDB Atlas vector search, Sarvam AI, Ollama." />
 
 <p>
-  <a href="https://aqua-wheat.vercel.app"><img src="./assets/card-aquasentinel.svg" width="49%" alt="AquaSentinel: mission control for an underwater inspection robot with telemetry, route planning and AI defect detection. Opens the live demo." /></a>
-  <a href="https://github.com/srinivas-rc0408/archagent"><img src="./assets/card-archagent.svg" width="49%" alt="ArchAgent: a plain-language building brief becomes 3D renders and an itemised INR cost estimate in under 60 seconds. React, TypeScript, Gemini." /></a>
-  <a href="https://github.com/srinivas-rc0408/health-risk-mlops"><img src="./assets/card-mlops.svg" width="49%" alt="health-risk-mlops: a health-risk model served by FastAPI, containerised with Docker, tracked in MLflow, tested by GitHub Actions." /></a>
-  <img src="./assets/card-debugext.svg" width="49%" alt="Debug.ext: Chrome extension that catches runtime errors, ranks them P0 to P3, and drafts the fix. FastAPI and Streamlit." />
+  <a href="https://github.com/srinivas-rc0408/aegis"><img src="./assets/card-aegis.svg?v=c76b189b" width="49%" alt="AEGIS: air-gapped agentic AI workbench for Mangalore Refinery, Smart India Hackathon 2026. Runs a 7B model on a 4 GB laptop GPU. LangGraph, Ollama, FAISS, Docker." /></a>
+  <a href="https://github.com/srinivas-rc0408/codebase-migration-agent"><img src="./assets/card-migration.svg?v=28bc08d7" width="49%" alt="Codebase migration agent: an LLM agent that upgrades whole codebases across breaking version changes and tests its own edits. Python, AST, Docker." /></a>
+</p>
+
+<img src="./assets/h-shipped.svg?v=12f3a7fd" width="98.5%" alt="~/shipped: finished and public" />
+
+<p>
+  <a href="https://aqua-wheat.vercel.app"><img src="./assets/card-aquasentinel.svg?v=91f3f884" width="49%" alt="AquaSentinel: mission control for an underwater inspection robot with telemetry, route planning and AI defect detection. Opens the live demo." /></a>
+  <a href="https://github.com/srinivas-rc0408/archagent"><img src="./assets/card-archagent.svg?v=6f9fa786" width="49%" alt="ArchAgent: a plain-language building brief becomes 3D renders and an itemised INR cost estimate in under 60 seconds. React, TypeScript, Gemini." /></a>
+  <a href="https://github.com/srinivas-rc0408/health-risk-mlops"><img src="./assets/card-mlops.svg?v=f9f4a46a" width="49%" alt="health-risk-mlops: a health-risk model served by FastAPI, containerised with Docker, tracked in MLflow, tested by GitHub Actions." /></a>
+  <img src="./assets/card-debugext.svg?v=c169c093" width="49%" alt="Debug.ext: Chrome extension that catches runtime errors, ranks them P0 to P3, and drafts the fix. FastAPI and Streamlit." />
 </p>
 
 
-<img src="./assets/h-stack.svg" width="98.5%" alt="~/stack: tools I can defend in an interview" />
+<img src="./assets/h-stack.svg?v=6ff07ec4" width="98.5%" alt="~/stack: tools I can defend in an interview" />
 
-<img src="./assets/stack.svg" width="98.5%" alt="llm systems: LangGraph, Ollama, FAISS, ChromaDB, sentence-transformers, Gemini API; ml + mlops: Python, NumPy, MLflow, Docker, GitHub Actions; backend: FastAPI, Express, PostgreSQL, MongoDB, SQLite; frontend: TypeScript, React, Next.js, Vite, Streamlit; systems: Arch Linux, Bash, fish, Git, C++" />
+<img src="./assets/stack.svg?v=7cdcc431" width="98.5%" alt="llm systems: LangGraph, Ollama, FAISS, ChromaDB, sentence-transformers, Gemini API; ml + mlops: Python, NumPy, MLflow, Docker, GitHub Actions; backend: FastAPI, Express, PostgreSQL, MongoDB, SQLite; frontend: TypeScript, React, Next.js, Vite, Streamlit; systems: Arch Linux, Bash, fish, Git, C++" />
 
-<img src="./assets/h-activity.svg" width="98.5%" alt="~/activity: the last twelve months" />
+<img src="./assets/h-activity.svg?v=d7d55af4" width="98.5%" alt="~/activity: the last twelve months" />
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="./profile/snake-dark.svg" /><source media="(prefers-color-scheme: light)" srcset="./profile/snake-light.svg" /><img src="./profile/snake-dark.svg" width="98.5%" alt="A snake eating the last year of contributions, square by square" /></picture>
 
-<img src="./assets/h-contact.svg" width="98.5%" alt="~/contact: fastest reply: email" />
+<img src="./assets/h-contact.svg?v=14b2420c" width="98.5%" alt="~/contact: fastest reply: email" />
 
 <p>
-  <a href="https://srinivas-rc.is-a.dev"><img src="./assets/btn-portfolio.svg" width="24%" alt="portfolio: srinivas-rc.is-a.dev" /></a>
-  <a href="https://www.linkedin.com/in/srinivas-r-c-169406294"><img src="./assets/btn-linkedin.svg" width="24%" alt="linkedin: Srinivas R C" /></a>
-  <a href="mailto:srinivasrc0408@gmail.com"><img src="./assets/btn-email.svg" width="24%" alt="email: srinivasrc0408@gmail.com" /></a>
-  <a href="https://steamcommunity.com/profiles/76561199545795989/"><img src="./assets/btn-steam.svg" width="24%" alt="steam: off the clock" /></a>
+  <a href="https://srinivas-rc.is-a.dev"><img src="./assets/btn-portfolio.svg?v=7f7d2e28" width="24%" alt="portfolio: srinivas-rc.is-a.dev" /></a>
+  <a href="https://www.linkedin.com/in/srinivas-r-c-169406294"><img src="./assets/btn-linkedin.svg?v=6cfd902b" width="24%" alt="linkedin: Srinivas R C" /></a>
+  <a href="mailto:srinivasrc0408@gmail.com"><img src="./assets/btn-email.svg?v=1f81cf65" width="24%" alt="email: srinivasrc0408@gmail.com" /></a>
+  <a href="https://steamcommunity.com/profiles/76561199545795989/"><img src="./assets/btn-steam.svg?v=3e1d228a" width="24%" alt="steam: off the clock" /></a>
 </p>
 
-<img src="./assets/footer.svg" width="98.5%" alt="srinivas@s10 exit. Process completed. Made in Bengaluru on Arch Linux." />
+<img src="./assets/footer.svg?v=82e8bf65" width="98.5%" alt="srinivas@s10 exit. Process completed. Made in Bengaluru on Arch Linux." />

@@ -606,7 +606,8 @@ def build_all():
     return alts
 
 def pic(name, alt, width, href=None):
-    p = f'<img src="./assets/{name}" width="{width}" alt="{esc(alt, {chr(34): "&quot;"})}" />'
+    v = __import__("hashlib").sha1(open(f"assets/{name}", "rb").read()).hexdigest()[:8]   # cache-buster: new URL whenever the file changes
+    p = f'<img src="./assets/{name}?v={v}" width="{width}" alt="{esc(alt, {chr(34): "&quot;"})}" />'
     return f'<a href="{href}">{p}</a>' if href else p
 
 def readme(alts):
